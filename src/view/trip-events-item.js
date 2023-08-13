@@ -1,20 +1,29 @@
 import { createElement } from '../render';
+import { getHoursWaypoints, getTimeInterval, getNormalizeDayMonth, getNormalizeEventDay } from '../utils';
 
-function createBoardTemplate() {
-  return `<li class="trip-events__item">
+function createBoardTemplate(data) {
+  const { destination, timeStart, timeEnd, additionally } = data.waypoint;
+  const { type, offers } = additionally;
+
+  const normalizeTimeStart = getHoursWaypoints(timeStart);
+  const normalizeTimeEnd = getHoursWaypoints(timeEnd);
+  const normalizeDate = getNormalizeDayMonth(timeStart);
+
+
+  return /*html*/ `<li class="trip-events__item">
   <div class="event">
-    <time class="event__date" datetime="2019-03-19">MAR 19</time>
+    <time class="event__date" datetime="${getNormalizeEventDay(timeStart)}">${normalizeDate}</time>
     <div class="event__type">
-      <img class="event__type-icon" width="42" height="42" src="img/icons/flight.png" alt="Event type icon">
+      <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
     </div>
-    <h3 class="event__title">Flight Geneva</h3>
+    <h3 class="event__title">${type} ${destination}</h3>
     <div class="event__schedule">
       <p class="event__time">
-        <time class="event__start-time" datetime="2019-03-19T18:00">18:00</time>
+        <time class="event__start-time" datetime="2019-03-19T18:00">${normalizeTimeStart}</time>
         &mdash;
-        <time class="event__end-time" datetime="2019-03-19T19:00">19:00</time>
+        <time class="event__end-time" datetime="2019-03-19T19:00">${normalizeTimeEnd}</time>
       </p>
-      <p class="event__duration">01H</p>
+      <p class="event__duration">${getTimeInterval(timeStart, timeEnd)}</p>
     </div>
     <p class="event__price">
       &euro;&nbsp;<span class="event__price-value">20</span>
@@ -46,8 +55,13 @@ function createBoardTemplate() {
 }
 
 export default class TripEventsItem {
+  constructor(data) {
+    this.data = data;
+  }
+
+
   getTemplate() {
-    return createBoardTemplate();
+    return createBoardTemplate(this.data);
   }
 
   getElement() {

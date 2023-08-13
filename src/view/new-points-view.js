@@ -1,7 +1,11 @@
 import { createElement } from '../render';
 
-function createBoardTemplate() {
-  return ` <li class="trip-events__item">
+function createBoardTemplate(data) {
+  const { photo } = data.waypoint[0];
+
+  console.log(photo);
+
+  return /*html*/ `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
     <header class="event__header">
       <div class="event__type-wrapper">
@@ -152,7 +156,7 @@ function createBoardTemplate() {
 
         <div class="event__photos-container">
           <div class="event__photos-tape">
-            <img class="event__photo" src="img/photos/1.jpg" alt="Event photo">
+            <img class="event__photo" src="${photo[1]}" alt="Event photo">
             <img class="event__photo" src="img/photos/2.jpg" alt="Event photo">
             <img class="event__photo" src="img/photos/3.jpg" alt="Event photo">
             <img class="event__photo" src="img/photos/4.jpg" alt="Event photo">
@@ -167,12 +171,16 @@ function createBoardTemplate() {
 
 
 export default class NewPoints {
+  constructor(data) {
+    this.data = data;
+  }
+
   getTemplate() {
-    return createBoardTemplate();
+    return createBoardTemplate(this.data);
   }
 
   getElement() {
-    if(!this.element) {
+    if (!this.element) {
       this.element = createElement(this.getTemplate());
     }
 
