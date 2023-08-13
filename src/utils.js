@@ -1,50 +1,34 @@
 import dayjs from 'dayjs';
-import { PHOTO_SITE } from './const';
-
-function getRandomArrayElement(items) {
-  return items[Math.floor(Math.random() * items.length)];
-}
-
-function getRandomArbitrary(min, max) {
-  return Math.round(Math.random() * (max - min) + min);
-}
-
-function getFivePhoto() {
-  const photoArr = [];
-  for (let i = 0; i < 5; i++) {
-    photoArr.push(PHOTO_SITE + getRandomArbitrary(1, 100));
-  }
-  return photoArr;
-}
+import { TimeForDate } from './const';
 
 function getTimeInterval(dateStart, dateEnd) {
   const difTime = dayjs(dateEnd).diff(dayjs(dateStart), 'm');
-  if (difTime < 60) {
+  if (difTime < TimeForDate.MIN_IN_HOUR) {
     return `${difTime}M`;
   }
-  if (difTime >= 60 && difTime < 1440) {
-    return `${Math.floor(difTime / 60)}H ${(difTime % 60).toFixed(0)}M`;
+  if (difTime >= TimeForDate.MIN_IN_HOUR && difTime < TimeForDate.MIN_IN_MONTH) {
+    return `${Math.floor(difTime / TimeForDate.MIN_IN_HOUR)}H ${(difTime % TimeForDate.MIN_IN_HOUR).toFixed(0)}M`;
   }
-  if (difTime >= 1440) {
-    return `${Math.round(difTime / 1440)}D ${dayjs(difTime % 1440 / 60).format('HH')}H ${dayjs(difTime % 60).format('mm')}M`;
+  if (difTime >= TimeForDate.MIN_IN_MONTH) {
+    return `${Math.round(difTime / TimeForDate.MIN_IN_MONTH)}D ${dayjs(difTime % TimeForDate.MIN_IN_MONTH / TimeForDate.MIN_IN_HOUR).format('HH')}H ${dayjs(difTime % TimeForDate.MIN_IN_HOUR).format('mm')}M`;
   }
   return difTime;
 }
 
-function getHoursWaypoints(date) {
+function filterHoursPoints(date) {
   return date ? dayjs(date).format('HH:mm') : '';
 }
 
-function getNormalizeDayMonth(date) {
+function filterDayMonth(date) {
   return date ? dayjs(date).format('DD MMM') : '';
 }
 
-function getNormalizeEventDay(date) {
+function filterPointDay(date) {
   return date ? dayjs(date).format('DD-MM-YYYY') : '';
 }
 
-function getDateForNewPoint(date) {
+function filterDateForNewPoint(date) {
   return date ? dayjs(date).format('DD/MM/YY HH:mm') : '';
 }
 
-export { getRandomArrayElement, getRandomArbitrary, getTimeInterval, getHoursWaypoints, getNormalizeDayMonth, getNormalizeEventDay, getFivePhoto, getDateForNewPoint };
+export { getTimeInterval, filterHoursPoints, filterDayMonth, filterPointDay, filterDateForNewPoint };

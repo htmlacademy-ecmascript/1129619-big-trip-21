@@ -1,5 +1,5 @@
-import { WAYPOINTS_TYPE, DESCRIPTION } from '../const';
-import { getRandomArrayElement, getFivePhoto } from '../utils';
+import { POINTS_TYPE } from '../const';
+import { getRandomArrayElement, getRandomPhotos, getRandomDescription } from './utils';
 
 const mockOffers = [
   {
@@ -26,17 +26,17 @@ const mockOffers = [
     'type': 'flight',
     'offers': [
       {
-        'id': 1,
+        'id': 4,
         'title': 'Change place',
         'price': 70,
       },
       {
-        'id': 2,
+        'id': 5,
         'title': 'Upgrede to a business class',
         'price': 90,
       },
       {
-        'id': 3,
+        'id': 6,
         'title': 'Touch stewardess',
         'price': 20,
       },
@@ -46,17 +46,17 @@ const mockOffers = [
     'type': 'ship',
     'offers': [
       {
-        'id': 1,
+        'id': 7,
         'title': 'Diving',
         'price': 30,
       },
       {
-        'id': 2,
+        'id': 8,
         'title': 'Catch an octopus',
         'price': 45,
       },
       {
-        'id': 3,
+        'id': 9,
         'title': 'Release octopus',
         'price': 122,
       },
@@ -64,48 +64,48 @@ const mockOffers = [
   },
 ];
 
-const mockWaypoints = [
+const mockPoints = [
   {
-    type: getRandomArrayElement(WAYPOINTS_TYPE),
+    type: getRandomArrayElement(POINTS_TYPE),
     destination: 'Moscow',
     timeStart: '2021-02-10 00:10',
     timeEnd: '2021-02-10 00:30',
     additionally: getRandomArrayElement(mockOffers),
-    description: getRandomArrayElement(DESCRIPTION.split('. ')),
-    photo: getFivePhoto(),
+    description: getRandomDescription(),
+    photos: getRandomPhotos(),
   },
   {
-    type: getRandomArrayElement(WAYPOINTS_TYPE),
+    type: getRandomArrayElement(POINTS_TYPE),
     destination: 'London',
     timeStart: '2021-02-10 00:20',
     timeEnd: '2021-02-10 13:00',
     additionally: getRandomArrayElement(mockOffers),
-    description: getRandomArrayElement(DESCRIPTION.split('. ')),
-    photo: getFivePhoto(),
+    description: getRandomDescription(),
+    photos: getRandomPhotos(),
   },
   {
-    type: getRandomArrayElement(WAYPOINTS_TYPE),
+    type: getRandomArrayElement(POINTS_TYPE),
     destination: 'Paris',
     timeStart: '2021-04-03 00:00',
     timeEnd: '2021-04-05 20:00',
     additionally: getRandomArrayElement(mockOffers),
-    description: getRandomArrayElement(DESCRIPTION.split('. ')),
-    photo: getFivePhoto(),
+    description: getRandomDescription(),
+    photos: getRandomPhotos(),
   },
   {
-    type: getRandomArrayElement(WAYPOINTS_TYPE),
+    type: getRandomArrayElement(POINTS_TYPE),
     destination: 'Istambul',
     timeStart: '2021-04-03 00:00',
     timeEnd: '2021-04-04 02:00',
     additionally: getRandomArrayElement(mockOffers),
-    description: getRandomArrayElement(DESCRIPTION.split('. ')),
-    photo: getFivePhoto(),
+    description: getRandomDescription(),
+    photos: getRandomPhotos(),
   },
 ];
 
-function getRandomWaypoint() {
-  return getRandomArrayElement(mockWaypoints);
+function getRandompoint() {
+  return getRandomArrayElement(mockPoints);
 }
 
-export { getRandomWaypoint, mockOffers };
+export { getRandompoint, mockOffers };
 

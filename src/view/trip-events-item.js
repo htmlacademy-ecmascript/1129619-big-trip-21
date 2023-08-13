@@ -1,28 +1,35 @@
 import { createElement } from '../render';
-import { getHoursWaypoints, getTimeInterval, getNormalizeDayMonth, getNormalizeEventDay } from '../utils';
+import {
+  filterHoursPoints,
+  getTimeInterval,
+  filterDayMonth,
+  filterPointDay,
+} from '../utils';
 
 function createBoardTemplate(data) {
-  const { destination, timeStart, timeEnd, additionally } = data.waypoint;
+  const { destination, timeStart, timeEnd, additionally } = data.point;
   const { type, offers } = additionally;
 
-  const normalizeTimeStart = getHoursWaypoints(timeStart);
-  const normalizeTimeEnd = getHoursWaypoints(timeEnd);
-  const normalizeDate = getNormalizeDayMonth(timeStart);
+  const normalizeTimeStart = filterHoursPoints(timeStart);
+  const normalizeTimeEnd = filterHoursPoints(timeEnd);
+  const normalizeDate = filterDayMonth(timeStart);
 
-
-  return /*html*/ `<li class="trip-events__item">
-  <div class="event">
-    <time class="event__date" datetime="${getNormalizeEventDay(timeStart)}">${normalizeDate}</time>
-    <div class="event__type">
+  return /*html*/ `
+  <li class="trip-events__item">
+    <div class="event">
+      <time class="event__date" datetime="${filterPointDay(
+    timeStart
+  )}">${normalizeDate}</time>
+      <div class="event__type">
       <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
     </div>
     <h3 class="event__title">${type} ${destination}</h3>
-    <div class="event__schedule">
-      <p class="event__time">
-        <time class="event__start-time" datetime="2019-03-19T18:00">${normalizeTimeStart}</time>
-        &mdash;
-        <time class="event__end-time" datetime="2019-03-19T19:00">${normalizeTimeEnd}</time>
-      </p>
+      <div class="event__schedule">
+        <p class="event__time">
+          <time class="event__start-time" datetime="2019-03-19T18:00">${normalizeTimeStart}</time>
+          &mdash;
+          <time class="event__end-time" datetime="2019-03-19T19:00">${normalizeTimeEnd}</time>
+        </p>
       <p class="event__duration">${getTimeInterval(timeStart, timeEnd)}</p>
     </div>
     <p class="event__price">
@@ -30,7 +37,9 @@ function createBoardTemplate(data) {
     </p>
     <h4 class="visually-hidden">Offers:</h4>
     <ul class="event__selected-offers">
-    ${offers.map(({ title, price }) => `<li class="event__offer">
+    ${offers
+    .map(
+      ({ title, price }) => `<li class="event__offer">
     <span class="event__offer-title">${title}</span>
     &plus;&euro;&nbsp;
     <span class="event__offer-price">${price}</span>
@@ -54,13 +63,12 @@ export default class TripEventsItem {
     this.data = data;
   }
 
-
   getTemplate() {
     return createBoardTemplate(this.data);
   }
 
   getElement() {
-    if(!this.element) {
+    if (!this.element) {
       this.element = createElement(this.getTemplate());
     }
 

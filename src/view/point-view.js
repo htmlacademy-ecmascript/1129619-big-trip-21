@@ -1,19 +1,20 @@
 import { createElement } from '../render';
-import { getRandomArrayElement, getDateForNewPoint } from '../utils';
-import { WAYPOINTS_TYPE, } from '../const';
+import { filterDateForNewPoint } from '../utils';
+import { getRandomArrayElement } from '../mock/utils';
+import { POINTS_TYPE } from '../const';
 
 const BLANK_DATA_TRIP = {
-  type: getRandomArrayElement(WAYPOINTS_TYPE),
+  type: getRandomArrayElement(POINTS_TYPE),
   destination: null,
   timeStart: new Date(),
   timeEnd: null,
   additionally: null,
-  description: null,
-  photo: null,
+  description: '',
+  photos: null,
 };
 
 function createBoardTemplate(data) {
-  const { destination, timeStart, timeEnd, additionally, description, photo } = data.waypoint;
+  const { destination, timeStart, timeEnd, additionally, description, photos } = data.point;
   const { type, offers } = additionally;
 
   return /*html*/ `<li class="trip-events__item">
@@ -92,10 +93,10 @@ function createBoardTemplate(data) {
 
       <div class="event__field-group  event__field-group--time">
         <label class="visually-hidden" for="event-start-time-1">From</label>
-        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${getDateForNewPoint(timeStart)}">
+        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${filterDateForNewPoint(timeStart)}">
         &mdash;
         <label class="visually-hidden" for="event-end-time-1">To</label>
-        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${getDateForNewPoint(timeEnd)}">
+        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${filterDateForNewPoint(timeEnd)}">
       </div>
 
       <div class="event__field-group  event__field-group--price">
@@ -115,14 +116,15 @@ function createBoardTemplate(data) {
 
         <div class="event__available-offers">
 
-        ${offers.map(({ title, price }) => `<div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked>
-      <label class="event__offer-label" for="event-offer-luggage-1">
-        <span class="event__offer-title">${title}</span>
-        &plus;&euro;&nbsp;
-        <span class="event__offer-price">${price}</span>
-      </label>
-    </></div>`).join('')};
+        ${offers.map(({ title, price }) => `
+        <div class="event__offer-selector">
+          <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked>
+          <label class="event__offer-label" for="event-offer-luggage-1">
+          <span class="event__offer-title">${title}</span>
+          &plus;&euro;&nbsp;
+          <span class="event__offer-price">${price}</span>
+          </label>
+        </div>`).join('')}
 
       </section>
 
@@ -132,8 +134,7 @@ function createBoardTemplate(data) {
 
         <div class="event__photos-container">
           <div class="event__photos-tape">
-          ${photo.map((el) =>
-    `<img class="event__photo" src="${el}" alt="Event photo"></img>`)};
+          ${photos.map((el) => `<img class="event__photo" src="${el}" alt="Event photo">`)}
           </div>
         </div>
 
@@ -144,7 +145,7 @@ function createBoardTemplate(data) {
 }
 
 
-export default class NewPoints {
+export default class NewPoint {
   constructor(data = BLANK_DATA_TRIP) {
     this.data = data;
   }
