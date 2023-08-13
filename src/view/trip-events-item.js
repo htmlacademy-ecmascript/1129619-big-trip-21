@@ -7,7 +7,7 @@ import {
 } from '../utils';
 
 function createBoardTemplate(data) {
-  const { destination, timeStart, timeEnd, additionally } = data.point;
+  const { destination, timeStart, timeEnd, additionally } = data;
   const { type, offers } = additionally;
 
   const normalizeTimeStart = filterHoursPoints(timeStart);

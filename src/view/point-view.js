@@ -14,7 +14,7 @@ const BLANK_DATA_TRIP = {
 };
 
 function createBoardTemplate(data) {
-  const { destination, timeStart, timeEnd, additionally, description, photos } = data.point;
+  const { destination, timeStart, timeEnd, additionally, description, photos } = data;
   const { type, offers } = additionally;
 
   return /*html*/ `<li class="trip-events__item">

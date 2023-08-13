@@ -1,5 +1,6 @@
 import { POINTS_TYPE } from '../const';
 import { getRandomArrayElement, getRandomPhotos, getRandomDescription } from './utils';
+import { POINTS_COUNT } from './const';
 
 const mockOffers = [
   {
@@ -103,9 +104,15 @@ const mockPoints = [
   },
 ];
 
-function getRandompoint() {
+function getRandomPoint() {
   return getRandomArrayElement(mockPoints);
 }
 
-export { getRandompoint, mockOffers };
+function getRandomPoints() {
+  return Array.from({ length: POINTS_COUNT }, getRandomPoint);
+
+}
+
+
+export { getRandomPoint, mockOffers, getRandomPoints };
 
