@@ -17,13 +17,13 @@ function getTimeInterval(dateStart, dateEnd) {
     return `${Math.floor(difTime / 60)}H ${(difTime % 60).toFixed(0)}M`;
   }
   if (difTime >= 1440) {
-    return `${Math.round(difTime / 1440)}D ${difTime % 1440 / 60}H ${dayjs(difTime % 60).format('mm')}M`;
+    return `${Math.round(difTime / 1440)}D ${dayjs(difTime % 1440 / 60).format('HH')}H ${dayjs(difTime % 60).format('mm')}M`;
   }
   return difTime;
 }
 
 function getHoursWaypoints(date) {
-  return date ? dayjs(date).format('HH mm') : '';
+  return date ? dayjs(date).format('HH:mm') : '';
 }
 
 function getNormalizeDayMonth(date) {
