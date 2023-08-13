@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import { PHOTO_SITE } from './const';
 
 function getRandomArrayElement(items) {
   return items[Math.floor(Math.random() * items.length)];
@@ -6,6 +7,14 @@ function getRandomArrayElement(items) {
 
 function getRandomArbitrary(min, max) {
   return Math.round(Math.random() * (max - min) + min);
+}
+
+function getFivePhoto() {
+  const photoArr = [];
+  for (let i = 0; i < 5; i++) {
+    photoArr.push(PHOTO_SITE + getRandomArbitrary(1, 100));
+  }
+  return photoArr;
 }
 
 function getTimeInterval(dateStart, dateEnd) {
@@ -34,4 +43,8 @@ function getNormalizeEventDay(date) {
   return date ? dayjs(date).format('DD-MM-YYYY') : '';
 }
 
-export { getRandomArrayElement, getRandomArbitrary, getTimeInterval, getHoursWaypoints, getNormalizeDayMonth, getNormalizeEventDay };
+function getDateForNewPoint(date) {
+  return date ? dayjs(date).format('DD/MM/YY HH:mm') : '';
+}
+
+export { getRandomArrayElement, getRandomArbitrary, getTimeInterval, getHoursWaypoints, getNormalizeDayMonth, getNormalizeEventDay, getFivePhoto, getDateForNewPoint };

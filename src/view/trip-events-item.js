@@ -30,16 +30,11 @@ function createBoardTemplate(data) {
     </p>
     <h4 class="visually-hidden">Offers:</h4>
     <ul class="event__selected-offers">
-      <li class="event__offer">
-        <span class="event__offer-title">Add luggage</span>
-        &plus;&euro;&nbsp;
-        <span class="event__offer-price">30</span>
-      </li>
-      <li class="event__offer">
-        <span class="event__offer-title">Switch to comfort</span>
-        &plus;&euro;&nbsp;
-        <span class="event__offer-price">100</span>
-      </li>
+    ${offers.map(({ title, price }) => `<li class="event__offer">
+    <span class="event__offer-title">${title}</span>
+    &plus;&euro;&nbsp;
+    <span class="event__offer-price">${price}</span>
+  </li>`).join('')}
     </ul>
     <button class="event__favorite-btn" type="button">
       <span class="visually-hidden">Add to favorite</span>

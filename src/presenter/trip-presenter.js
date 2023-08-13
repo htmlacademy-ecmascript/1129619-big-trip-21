@@ -17,8 +17,8 @@ export default class TripPresenter {
 
     render(new SortingTrip, this.tripContainer);
     render(this.tripComponent, this.tripContainer);
-    render(new NewPoints({ waypoint: this.waypoints }), this.tripComponent.getElement());
-    for (let i = 0; i < this.waypoints.length; i++) {
+    render(new NewPoints({ waypoint: this.waypoints[0] }), this.tripComponent.getElement());
+    for (let i = 1; i < this.waypoints.length; i++) {
       render(new TripEventsItem({ waypoint: this.waypoints[i] }), this.tripComponent.getElement());
     }
   }

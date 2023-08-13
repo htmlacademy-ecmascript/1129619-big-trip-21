@@ -1,13 +1,5 @@
-import { WAYPOINTS_TYPE, DESCRIPTION, PHOTO_SITE } from '../const';
-import { getRandomArbitrary, getRandomArrayElement } from '../utils';
-
-function getFivePhoto() {
-  const photoArr = [];
-  for (let i = 0; i < 5; i++) {
-    photoArr.push(PHOTO_SITE + getRandomArbitrary(1, 100));
-  }
-  return photoArr;
-}
+import { WAYPOINTS_TYPE, DESCRIPTION } from '../const';
+import { getRandomArrayElement, getFivePhoto } from '../utils';
 
 const mockOffers = [
   {
@@ -60,7 +52,7 @@ const mockOffers = [
       },
       {
         'id': 2,
-        'title': 'Catch an octopusUpgrede to a business class',
+        'title': 'Catch an octopus',
         'price': 45,
       },
       {
@@ -115,5 +107,5 @@ function getRandomWaypoint() {
   return getRandomArrayElement(mockWaypoints);
 }
 
-export { getRandomWaypoint };
+export { getRandomWaypoint, mockOffers };
 
