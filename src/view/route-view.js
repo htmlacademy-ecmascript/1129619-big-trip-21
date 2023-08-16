@@ -1,7 +1,9 @@
 import { createElement } from '../render.js';
 
 function createBoardTemplate() {
-  return `<ul class="trip-events__list">
+
+  return /*html*/ `
+  <ul class="trip-events__list">
   </ul>`;
 }
 
