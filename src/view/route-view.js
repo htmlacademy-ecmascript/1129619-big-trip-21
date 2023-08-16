@@ -1,4 +1,4 @@
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 
 function createBoardTemplate() {
 
@@ -7,20 +7,8 @@ function createBoardTemplate() {
   </ul>`;
 }
 
-export default class RouteTrip {
-  getTemplate() {
+export default class RouteTrip extends AbstractView {
+  get template() {
     return createBoardTemplate();
-  }
-
-  getElement() {
-    if(!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
   }
 }

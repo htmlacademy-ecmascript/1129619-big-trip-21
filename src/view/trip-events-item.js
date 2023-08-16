@@ -1,4 +1,4 @@
-import { createElement } from '../render';
+import AbstractView from '../framework/view/abstract-view.js';
 import {
   filterHoursPoints,
   getTimeInterval,
@@ -58,24 +58,15 @@ function createBoardTemplate(data) {
 </li>`;
 }
 
-export default class TripEventsItem {
+export default class TripEventsItem extends AbstractView{
+  #data = null;
+
   constructor(data) {
-    this.data = data;
+    super();
+    this.#data = data;
   }
 
-  getTemplate() {
-    return createBoardTemplate(this.data);
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
+  get template() {
+    return createBoardTemplate(this.#data);
   }
 }

@@ -1,4 +1,4 @@
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 
 function createBoardTemplate() {
   return /*html*/ `
@@ -27,20 +27,8 @@ function createBoardTemplate() {
               </form>`;
 }
 
-export default class FiltersTrip {
-  getTemplate() {
+export default class FiltersTrip extends AbstractView {
+  get template() {
     return createBoardTemplate();
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
   }
 }

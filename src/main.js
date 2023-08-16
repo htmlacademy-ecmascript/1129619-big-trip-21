@@ -1,8 +1,8 @@
+import { render, RenderPosition } from './framework/render';
 import InfoTrip from './view/info-trip-view';
 import FiltersTrip from './view/filters-view';
 import TripPresenter from './presenter/trip-presenter';
 import PointModel from './model/points-model';
-import { render, RenderPosition } from './render';
 import { getRandomPoints } from './mock/points';
 
 const siteHeaderElement = document.querySelector('.page-header');

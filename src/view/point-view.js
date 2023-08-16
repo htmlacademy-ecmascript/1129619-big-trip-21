@@ -1,4 +1,4 @@
-import { createElement } from '../render';
+import AbstractView from '../framework/view/abstract-view.js';
 import { filterDateForNewPoint } from '../utils';
 import { getRandomArrayElement } from '../mock/utils';
 import { POINTS_TYPE } from '../const';
@@ -145,24 +145,15 @@ function createBoardTemplate(data) {
 }
 
 
-export default class NewPoint {
+export default class NewPoint extends AbstractView{
+  #data = null;
+
   constructor(data = BLANK_DATA_TRIP) {
+    super();
     this.data = data;
   }
 
-  getTemplate() {
+  get template() {
     return createBoardTemplate(this.data);
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
   }
 }

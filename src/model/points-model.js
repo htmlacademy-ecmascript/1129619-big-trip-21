@@ -1,9 +1,15 @@
+import { getRandomPoint } from '../mock/points';
+
+const WAYPOINTS_COUNT = 4;
+
 export default class PointModel {
+  #points = Array.from({ length: WAYPOINTS_COUNT }, getRandomPoint);
+
   constructor(points) {
-    this.points = points;
+    this.#points = points;
   }
 
-  getPoints() {
-    return this.points;
+  get points() {
+    return this.#points;
   }
 }
