@@ -5,14 +5,15 @@ import {
   filterDayMonth,
   filterPointDay,
 } from '../utils';
+import { mockOffers } from '../mock/points.js';
 
 function createBoardTemplate(data) {
   const { typePoint, destination, timeStart, timeEnd, offersCheck, basePrice } = data;
-  const { offers } = offersCheck;
-  console.log(offersCheck);
+  // const { offers } = offersCheck;
+  // console.log(offersCheck);
 
-  // const typeOffersObj = mockOffers.find((item) => item.type === typePoint);
-  // const { offers } = typeOffersObj;
+  const typeOffersObj = mockOffers.find((item) => item.type === typePoint);
+  const { offers } = typeOffersObj;
 
   const normalizeTimeStart = filterHoursPoints(timeStart);
   const normalizeTimeEnd = filterHoursPoints(timeEnd);

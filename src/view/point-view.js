@@ -18,13 +18,11 @@ const BLANK_DATA_TRIP = {
 
 function createBoardTemplate(data) {
   const { typePoint, destination, timeStart, timeEnd, offersCheck, description, photos } = data;
-  const { offers } = offersCheck;
-  console.log(offersCheck);
-  // console.log(offersCheck.offers[ge]);
+  // const { offers } = offersCheck;
 
-  // const typeOffersObj = mockOffers.find((item) => item.type === typePoint);
-  // const { offers } = typeOffersObj;
-  // console.log(offers == offersCheck.offers);
+  const typeOffersObj = mockOffers.find((item) => item.type === typePoint);
+  const { offers } = typeOffersObj;
+  console.log(typeOffersObj);
 
   return /*html*/ `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">

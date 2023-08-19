@@ -4,62 +4,62 @@ import { POINTS_COUNT } from './const';
 
 const mockOffers = [
   {
-    'type': 'Taxi',
-    'offers': [
+    type: 'Taxi',
+    offers: [
       {
-        'id': 1,
-        'title': 'Choose the radio station',
-        'price': 60,
+        id: 1,
+        title: 'Choose the radio station',
+        price: 60,
       },
       {
-        'id': 2,
-        'title': 'Smoking in the cabin',
-        'price': 100,
+        id: 2,
+        title: 'Smoking in the cabin',
+        price: 100,
       },
       {
-        'id': 3,
-        'title': 'drink alcohol',
-        'price': 120,
-      },
-    ]
-  },
-  {
-    'type': 'Flight',
-    'offers': [
-      {
-        'id': 4,
-        'title': 'Change place',
-        'price': 70,
-      },
-      {
-        'id': 5,
-        'title': 'Upgrede to a business class',
-        'price': 90,
-      },
-      {
-        'id': 6,
-        'title': 'Touch stewardess',
-        'price': 20,
+        id: 3,
+        title: 'drink alcohol',
+        price: 120,
       },
     ]
   },
   {
-    'type': 'Ship',
-    'offers': [
+    type: 'Flight',
+    offers: [
       {
-        'id': 7,
-        'title': 'Diving',
-        'price': 30,
+        id: 4,
+        title: 'Change place',
+        price: 70,
       },
       {
-        'id': 8,
-        'title': 'Catch an octopus',
-        'price': 45,
+        id: 5,
+        title: 'Upgrede to a business class',
+        price: 90,
       },
       {
-        'id': 9,
-        'title': 'Release octopus',
-        'price': 122,
+        id: 6,
+        title: 'Touch stewardess',
+        price: 20,
+      },
+    ]
+  },
+  {
+    type: 'Ship',
+    offers: [
+      {
+        id: 7,
+        title: 'Diving',
+        price: 30,
+      },
+      {
+        id: 8,
+        title: 'Catch an octopus',
+        price: 45,
+      },
+      {
+        id: 9,
+        title: 'Release octopus',
+        price: 122,
       },
     ]
   },
