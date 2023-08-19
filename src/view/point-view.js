@@ -18,11 +18,23 @@ const BLANK_DATA_TRIP = {
 
 function createBoardTemplate(data) {
   const { typePoint, destination, timeStart, timeEnd, offersCheck, description, photos } = data;
-  // const { offers } = offersCheck;
 
   const typeOffersObj = mockOffers.find((item) => item.type === typePoint);
   const { offers } = typeOffersObj;
-  console.log(typeOffersObj);
+
+  const createTypeOffersTemplate = offers.map(({ id, title, price }) => `
+  <div class="event__offer-selector">
+    <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" ${offersCheck.map((elem) => {
+    if (elem === id) {
+      return 'checked';
+    }
+  }).join('')} >
+    <label class="event__offer-label" for="event-offer-luggage-1">
+    <span class="event__offer-title">${title}</span>
+    &plus;&euro;&nbsp;
+    <span class="event__offer-price">${price}</span>
+    </label>
+  </div>`).join('');
 
   return /*html*/ `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -123,15 +135,7 @@ function createBoardTemplate(data) {
 
         <div class="event__available-offers">
 
-        ${offers.map(({ title, price }) => `
-        <div class="event__offer-selector">
-          <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked>
-          <label class="event__offer-label" for="event-offer-luggage-1">
-          <span class="event__offer-title">${title}</span>
-          &plus;&euro;&nbsp;
-          <span class="event__offer-price">${price}</span>
-          </label>
-        </div>`).join('')}
+        ${createTypeOffersTemplate}
 
       </section>
 
@@ -152,7 +156,7 @@ function createBoardTemplate(data) {
 }
 
 
-export default class NewPoint extends AbstractView{
+export default class NewPoint extends AbstractView {
   #data = null;
 
   constructor(data = BLANK_DATA_TRIP) {

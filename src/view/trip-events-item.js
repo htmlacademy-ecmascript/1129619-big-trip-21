@@ -14,6 +14,20 @@ function createBoardTemplate(data) {
 
   const typeOffersObj = mockOffers.find((item) => item.type === typePoint);
   const { offers } = typeOffersObj;
+  // console.log(offers);
+
+  // offers.forEach(el => {
+  //   const qwert = [];
+  //   // console.log(el);
+  //   // console.log(offersCheck);
+  //   offersCheck.forEach(elem => {
+  //     if (el.id === elem) {
+  //       console.log(el)
+  //     }
+  //   });
+  // });
+
+  // if(offers.id)
 
   const normalizeTimeStart = filterHoursPoints(timeStart);
   const normalizeTimeEnd = filterHoursPoints(timeEnd);
@@ -77,6 +91,7 @@ export default class TripEventsItem extends AbstractView{
 
   #clickHandler = (evt) => {
     evt.preventDefault();
+    console.log(this.data);
     // this.#handleClick();
   };
 }
