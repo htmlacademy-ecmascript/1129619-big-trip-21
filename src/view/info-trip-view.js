@@ -1,6 +1,11 @@
 import AbstractView from '../framework/view/abstract-view.js';
 
 function createBoardTemplate() {
+  // const { offersCheck, basePrice } = data;
+  // const { type, offers } = offersCheck;
+
+  // console.log(data);
+
   return /*html*/ `
   <section class="trip-main__trip-info  trip-info">
   <div class="trip-info__main">
@@ -14,7 +19,14 @@ function createBoardTemplate() {
 }
 
 export default class InfoTrip extends AbstractView{
+  #data = null;
+
+  constructor(data) {
+    super();
+    this.#data = data;
+  }
+
   get template() {
-    return createBoardTemplate();
+    return createBoardTemplate(this.#data);
   }
 }

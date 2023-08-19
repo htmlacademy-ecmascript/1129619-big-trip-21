@@ -22,15 +22,19 @@ export default class TripPresenter {
 
     render(new SortingTrip, this.#tripContainer);
     render(this.#tripComponent, this.#tripContainer);
-    render(new NewPoint(this.#points[0]), this.#tripComponent.element);
+    // render(new NewPoint(this.#points[0]), this.#tripComponent.element);
     for (let i = 1; i < this.#points.length; i++) {
       this.#renderPoint(this.#points[i]);
+      render(new NewPoint(this.#points[i]), this.#tripComponent.element);
     }
   }
 
+  #handlerShowEditPoint = () => {
+    console.log('123');
+  };
+
   #renderPoint(point) {
     const pointComponent = new TripEventsItem(point);
-
     render(pointComponent, this.#tripComponent.element);
   }
 }

@@ -1,10 +1,10 @@
 import { POINTS_TYPE } from '../const';
-import { getRandomArrayElement, getRandomPhotos, getRandomDescription } from './utils';
+import { getRandomArrayElement, getRandomPhotos, getRandomDescription, getRandomArbitrary } from './utils';
 import { POINTS_COUNT } from './const';
 
 const mockOffers = [
   {
-    'type': 'taxi',
+    'type': 'Taxi',
     'offers': [
       {
         'id': 1,
@@ -24,7 +24,7 @@ const mockOffers = [
     ]
   },
   {
-    'type': 'flight',
+    'type': 'Flight',
     'offers': [
       {
         'id': 4,
@@ -44,7 +44,7 @@ const mockOffers = [
     ]
   },
   {
-    'type': 'ship',
+    'type': 'Ship',
     'offers': [
       {
         'id': 7,
@@ -67,40 +67,48 @@ const mockOffers = [
 
 const mockPoints = [
   {
-    type: getRandomArrayElement(POINTS_TYPE),
+    basePrice: '20000',
+    typePoint: getRandomArrayElement(POINTS_TYPE),
     destination: 'Moscow',
     timeStart: '2021-02-10 00:10',
     timeEnd: '2021-02-10 00:30',
-    additionally: getRandomArrayElement(mockOffers),
+    offersCheck: getRandomArrayElement(mockOffers),
     description: getRandomDescription(),
     photos: getRandomPhotos(),
+    isFavorite: true,
   },
   {
-    type: getRandomArrayElement(POINTS_TYPE),
+    basePrice: '5000',
+    typePoint: getRandomArrayElement(POINTS_TYPE),
     destination: 'London',
     timeStart: '2021-02-10 00:20',
     timeEnd: '2021-02-10 13:00',
-    additionally: getRandomArrayElement(mockOffers),
+    offersCheck: getRandomArrayElement(mockOffers),
     description: getRandomDescription(),
     photos: getRandomPhotos(),
+    isFavorite: true,
   },
   {
-    type: getRandomArrayElement(POINTS_TYPE),
+    basePrice: '1',
+    typePoint: getRandomArrayElement(POINTS_TYPE),
     destination: 'Paris',
     timeStart: '2021-04-03 00:00',
     timeEnd: '2021-04-05 20:00',
-    additionally: getRandomArrayElement(mockOffers),
+    offersCheck: getRandomArrayElement(mockOffers),
     description: getRandomDescription(),
     photos: getRandomPhotos(),
+    isFavorite: false,
   },
   {
-    type: getRandomArrayElement(POINTS_TYPE),
+    basePrice: '1234567',
+    typePoint: getRandomArrayElement(POINTS_TYPE),
     destination: 'Istambul',
     timeStart: '2021-04-03 00:00',
     timeEnd: '2021-04-04 02:00',
-    additionally: getRandomArrayElement(mockOffers),
+    offersCheck: getRandomArrayElement(mockOffers),
     description: getRandomDescription(),
     photos: getRandomPhotos(),
+    isFavorite: false,
   },
 ];
 
@@ -110,9 +118,48 @@ function getRandomPoint() {
 
 function getRandomPoints() {
   return Array.from({ length: POINTS_COUNT }, getRandomPoint);
-
 }
 
+// зачем нам это?
+function getRangeIdOffer(point) {
+  if (point.type === 'Taxi') {
+    return getRandomArbitrary(1, 3);
+  }
+  if (point.type === 'Flight') {
+    return getRandomArbitrary(4, 6);
+  }
+  if (point.type === 'Ship') {
+    return getRandomArbitrary(7, 9);
+  }
+}
+
+// function getMockOffers(point) {
+//тут должна быть шляпа, которая формирует массив в оферами для конкретного поинта
+// }
+
+// function getAllOffers() {
+//   const allOffersForMocks = [];
+//   mockPoints.forEach((point) => {
+//     mockOffers.find((offers) => {
+//       if (point.type === offers.type) {
+//         allOffersForMocks.push(offers.offers);
+//       }
+//     });
+//   });
+//   console.log(allOffersForMocks);
+// }
+
+// getAllOffers();
+
+// function getAllOffers(mockOffers) {
+//   const allOffersForMocks = [];
+//   mockOffers.forEach((point) => {
+//     console.log(point);
+//   });
+// };
+
+
+// getAllOffers(mockOffers);
 
 export { getRandomPoint, mockOffers, getRandomPoints };
 

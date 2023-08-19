@@ -2,20 +2,29 @@ import AbstractView from '../framework/view/abstract-view.js';
 import { filterDateForNewPoint } from '../utils';
 import { getRandomArrayElement } from '../mock/utils';
 import { POINTS_TYPE } from '../const';
+import { mockOffers } from '../mock/points.js';
 
 const BLANK_DATA_TRIP = {
-  type: getRandomArrayElement(POINTS_TYPE),
+  basePrice: 0,
+  typePoint: getRandomArrayElement(POINTS_TYPE),
   destination: null,
-  timeStart: new Date(),
+  timeStart: null,
   timeEnd: null,
-  additionally: null,
+  offersCheck: [],
   description: '',
   photos: null,
+  isFavorite: false,
 };
 
 function createBoardTemplate(data) {
-  const { destination, timeStart, timeEnd, additionally, description, photos } = data;
-  const { type, offers } = additionally;
+  const { typePoint, destination, timeStart, timeEnd, offersCheck, description, photos } = data;
+  const { offers } = offersCheck;
+  console.log(offersCheck);
+  // console.log(offersCheck.offers[ge]);
+
+  // const typeOffersObj = mockOffers.find((item) => item.type === typePoint);
+  // const { offers } = typeOffersObj;
+  // console.log(offers == offersCheck.offers);
 
   return /*html*/ `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -23,7 +32,7 @@ function createBoardTemplate(data) {
       <div class="event__type-wrapper">
         <label class="event__type  event__type-btn" for="event-type-toggle-1">
           <span class="visually-hidden">Choose event type</span>
-          <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
+          <img class="event__type-icon" width="17" height="17" src="img/icons/${typePoint}.png" alt="Event type icon">
         </label>
         <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -81,7 +90,7 @@ function createBoardTemplate(data) {
 
       <div class="event__field-group  event__field-group--destination">
         <label class="event__label  event__type-output" for="event-destination-1">
-          ${type}
+          ${typePoint}
         </label>
         <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" list="destination-list-1">
         <datalist id="destination-list-1">

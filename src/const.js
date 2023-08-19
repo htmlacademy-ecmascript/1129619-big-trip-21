@@ -1,4 +1,4 @@
-const POINTS_TYPE = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
+const POINTS_TYPE = ['Taxi', 'Ship', 'Flight'];
 
 const TimeForDate = {
   MIN_IN_HOUR: 60,
