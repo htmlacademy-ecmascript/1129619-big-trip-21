@@ -9,25 +9,9 @@ import { mockOffers } from '../mock/points.js';
 
 function createBoardTemplate(data) {
   const { typePoint, destination, timeStart, timeEnd, offersCheck, basePrice } = data;
-  // const { offers } = offersCheck;
-  // console.log(offersCheck);
 
   const typeOffersObj = mockOffers.find((item) => item.type === typePoint);
   const { offers } = typeOffersObj;
-  // console.log(offers);
-
-  // offers.forEach(el => {
-  //   const qwert = [];
-  //   // console.log(el);
-  //   // console.log(offersCheck);
-  //   offersCheck.forEach(elem => {
-  //     if (el.id === elem) {
-  //       console.log(el)
-  //     }
-  //   });
-  // });
-
-  // if(offers.id)
 
   const normalizeTimeStart = filterHoursPoints(timeStart);
   const normalizeTimeEnd = filterHoursPoints(timeEnd);
@@ -56,14 +40,17 @@ function createBoardTemplate(data) {
     </p>
     <h4 class="visually-hidden">Offers:</h4>
     <ul class="event__selected-offers">
-    ${offers
-    .map(
-      ({ title, price }) => `<li class="event__offer">
-    <span class="event__offer-title">${title}</span>
-    &plus;&euro;&nbsp;
-    <span class="event__offer-price">${price}</span>
-  </li>`).join('')}
-    </ul>
+      ${offers.map(({ id, title, price }) => offersCheck.map((checkedOfferId) => {
+    if (checkedOfferId === id) {
+      return `<li class="event__offer">
+              <span class="event__offer-title">${title}</span>
+              &plus;&euro;&nbsp;
+              <span class="event__offer-price">${price}</span>
+            </li>`;
+    }
+  }).join('')).join('')
+}
+    </ul >
     <button class="event__favorite-btn" type="button">
       <span class="visually-hidden">Add to favorite</span>
       <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
@@ -73,11 +60,11 @@ function createBoardTemplate(data) {
     <button class="event__rollup-btn" type="button">
       <span class="visually-hidden">Open event</span>
     </button>
-  </div>
-</li>`;
+  </div >
+</li > `;
 }
 
-export default class TripEventsItem extends AbstractView{
+export default class TripEventsItem extends AbstractView {
   constructor(data) {
     super();
     this.data = data;
@@ -91,7 +78,6 @@ export default class TripEventsItem extends AbstractView{
 
   #clickHandler = (evt) => {
     evt.preventDefault();
-    console.log(this.data);
     // this.#handleClick();
   };
 }
