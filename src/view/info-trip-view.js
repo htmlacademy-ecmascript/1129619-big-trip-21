@@ -1,11 +1,6 @@
 import AbstractView from '../framework/view/abstract-view.js';
 
 function createBoardTemplate() {
-  // const { offersCheck, basePrice } = data;
-  // const { type, offers } = offersCheck;
-
-  // console.log(data);
-
   return /*html*/ `
   <section class="trip-main__trip-info  trip-info">
   <div class="trip-info__main">

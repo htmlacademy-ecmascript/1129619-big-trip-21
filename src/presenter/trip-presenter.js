@@ -1,7 +1,7 @@
 import RouteTrip from '../view/route-view';
 import SortingTrip from '../view/sorting-view';
-import NewPoint from '../view/point-view';
-import TripEventsItem from '../view/trip-events-item';
+import NewPoint from '../view/editor-creator-view';
+import TripEventsItem from '../view/point-view';
 import { render } from '../framework/render';
 
 export default class TripPresenter {
@@ -22,10 +22,9 @@ export default class TripPresenter {
 
     render(new SortingTrip, this.#tripContainer);
     render(this.#tripComponent, this.#tripContainer);
-    // render(new NewPoint(this.#points[0]), this.#tripComponent.element);
+    render(new NewPoint(this.#points[0]), this.#tripComponent.element);
     for (let i = 0; i < this.#points.length; i++) {
       this.#renderPoint(this.#points[i]);
-      render(new NewPoint(this.#points[i]), this.#tripComponent.element);
     }
   }
 

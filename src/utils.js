@@ -1,18 +1,20 @@
 import dayjs from 'dayjs';
-import { TimeForDate } from './const';
 
 function getTimeInterval(dateStart, dateEnd) {
-  const difTime = dayjs(dateEnd).diff(dayjs(dateStart), 'm');
-  if (difTime < TimeForDate.MIN_IN_HOUR) {
-    return `${difTime}M`;
+  const start = dayjs(dateStart);
+  const end = dayjs(dateEnd);
+  const differentTime = end.diff(start);
+  const days = Math.floor(differentTime / (1000 * 60 * 60 * 24) % 30);
+  const hours = Math.floor((differentTime / (1000 * 60 * 60)) % 24);
+  const minutes = Math.floor((differentTime / (1000 * 60)) % 60);
+
+  if (!days && !hours) {
+    return `${minutes}M`;
   }
-  if (difTime >= TimeForDate.MIN_IN_HOUR && difTime < TimeForDate.MIN_IN_MONTH) {
-    return `${Math.floor(difTime / TimeForDate.MIN_IN_HOUR)}H ${(difTime % TimeForDate.MIN_IN_HOUR).toFixed(0)}M`;
+  if (!days) {
+    return `${hours}H ${minutes}M`;
   }
-  if (difTime >= TimeForDate.MIN_IN_MONTH) {
-    return `${Math.round(difTime / TimeForDate.MIN_IN_MONTH)}D ${dayjs(difTime % TimeForDate.MIN_IN_MONTH / TimeForDate.MIN_IN_HOUR).format('HH')}H ${dayjs(difTime % TimeForDate.MIN_IN_HOUR).format('mm')}M`;
-  }
-  return difTime;
+  return `${days}D ${hours}H ${minutes}M`;
 }
 
 function filterHoursPoints(date) {

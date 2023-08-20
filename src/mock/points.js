@@ -1,6 +1,6 @@
 import { POINTS_TYPE } from '../const';
 import { getRandomArrayElement, getRandomPhotos, getRandomDescription, getRandomArbitrary } from './utils';
-import { POINTS_COUNT, CITIES } from './const';
+import { POINTS_COUNT, CITIES, Time, PRICE } from './const';
 
 const mockOffers = [
   {
@@ -33,7 +33,7 @@ const mockOffers = [
       },
       {
         id: 5,
-        title: 'Upgrede to a business class',
+        title: 'Upgrade to a business class',
         price: 90,
       },
       {
@@ -68,11 +68,11 @@ const mockOffers = [
 function getRandomPoint() {
   const typePoint = getRandomArrayElement(POINTS_TYPE);
   return {
-    basePrice: '1234567',
+    basePrice: getRandomArrayElement(PRICE),
     typePoint,
     destination: getRandomArrayElement(CITIES),
-    timeStart: '2021-04-03 00:00',
-    timeEnd: '2021-04-04 02:00',
+    timeStart: getRandomArrayElement(Time.START),
+    timeEnd: getRandomArrayElement(Time.END),
     offersCheck: getCheckedOffers(typePoint),
     description: getRandomDescription(),
     photos: getRandomPhotos(),
