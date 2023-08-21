@@ -76,7 +76,7 @@ function getRandomPoint() {
     offersCheck: getCheckedOffers(typePoint),
     description: getRandomDescription(),
     photos: getRandomPhotos(),
-    isFavorite: false,
+    isFavorite: Boolean(getRandomArbitrary(0, 1)),
   };
 }
 

@@ -7,8 +7,8 @@ import {
 } from '../utils.js';
 import { mockOffers } from '../mock/points.js';
 
-function createBoardTemplate(data) {
-  const { typePoint, destination, timeStart, timeEnd, offersCheck, basePrice } = data;
+function createBoardTemplate(point) {
+  const { typePoint, destination, timeStart, timeEnd, offersCheck, basePrice, isFavorite } = point;
 
   const typeOffersObj = mockOffers.find((item) => item.type === typePoint);
   const { offers } = typeOffersObj;
@@ -16,6 +16,7 @@ function createBoardTemplate(data) {
   const normalizeTimeStart = filterHoursPoints(timeStart);
   const normalizeTimeEnd = filterHoursPoints(timeEnd);
   const normalizeDate = filterDayMonth(timeStart);
+  const favoriteClassName = isFavorite ? 'event__favorite-btn--active' : '';
 
   return /*html*/ `
   <li class="trip-events__item">
@@ -50,7 +51,7 @@ function createBoardTemplate(data) {
     }
   }).join('')).join('')}
     </ul >
-    <button class="event__favorite-btn" type="button">
+    <button class="event__favorite-btn ${favoriteClassName}" type="button">
       <span class="visually-hidden">Add to favorite</span>
       <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
         <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"/>
@@ -63,16 +64,18 @@ function createBoardTemplate(data) {
 </li > `;
 }
 
-export default class TripEventsItem extends AbstractView {
-  constructor(data) {
+export default class Point extends AbstractView {
+  #handleClick = null;
+
+  constructor(point) {
     super();
-    this.data = data;
+    this.point = point;
     // this.handleClick = onClick;
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#clickHandler);
   }
 
   get template() {
-    return createBoardTemplate(this.data);
+    return createBoardTemplate(this.point);
   }
 
   #clickHandler = (evt) => {

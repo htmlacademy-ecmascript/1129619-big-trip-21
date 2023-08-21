@@ -29,8 +29,8 @@ function filterPointDay(date) {
   return date ? dayjs(date).format('DD-MM-YYYY') : '';
 }
 
-function filterDateForNewPoint(date) {
+function filterDateForEditorCreator(date) {
   return date ? dayjs(date).format('DD/MM/YY HH:mm') : '';
 }
 
-export { getTimeInterval, filterHoursPoints, filterDayMonth, filterPointDay, filterDateForNewPoint };
+export { getTimeInterval, filterHoursPoints, filterDayMonth, filterPointDay, filterDateForEditorCreator };

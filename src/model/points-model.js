@@ -1,5 +1,3 @@
-// import { getRandomPoint } from '../mock/points';
-
 export default class PointModel {
   #points = null;
 

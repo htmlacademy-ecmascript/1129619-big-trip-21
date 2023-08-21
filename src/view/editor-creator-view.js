@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import { filterDateForNewPoint } from '../utils.js';
+import { filterDateForEditorCreator } from '../utils.js';
 import { getRandomArrayElement } from '../mock/utils.js';
 import { POINTS_TYPE } from '../const.js';
 import { mockOffers } from '../mock/points.js';
@@ -16,8 +16,8 @@ const BLANK_DATA_TRIP = {
   isFavorite: false,
 };
 
-function createBoardTemplate(data) {
-  const { typePoint, destination, timeStart, timeEnd, offersCheck, description, photos } = data;
+function createBoardTemplate(point) {
+  const { typePoint, destination, timeStart, timeEnd, offersCheck, description, photos } = point;
 
   const typeOffersObj = mockOffers.find((item) => item.type === typePoint);
   const { offers } = typeOffersObj;
@@ -112,10 +112,10 @@ function createBoardTemplate(data) {
 
       <div class="event__field-group  event__field-group--time">
         <label class="visually-hidden" for="event-start-time-1">From</label>
-        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${filterDateForNewPoint(timeStart)}">
+        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${filterDateForEditorCreator(timeStart)}">
         &mdash;
         <label class="visually-hidden" for="event-end-time-1">To</label>
-        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${filterDateForNewPoint(timeEnd)}">
+        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${filterDateForEditorCreator(timeEnd)}">
       </div>
 
       <div class="event__field-group  event__field-group--price">
@@ -156,7 +156,7 @@ function createBoardTemplate(data) {
 }
 
 
-export default class NewPoint extends AbstractView {
+export default class EditorCreator extends AbstractView {
   #data = null;
 
   constructor(data = BLANK_DATA_TRIP) {
