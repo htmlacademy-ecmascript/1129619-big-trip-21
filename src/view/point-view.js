@@ -15,7 +15,7 @@ function createPoint(point, listOffers) {
   const timeInterval = getTimeInterval(timeStart, timeEnd);
   const startPointDay = filterPointDay(timeStart);
 
-  const typeOffersObj = listOffers.find((item) => item.type === typePoint);
+  const typeOffersObj = listOffers.find((offer) => offer.type === typePoint);
   const { offers } = typeOffersObj;
 
   const createTypeOffersTemplate = () => offers.map(({ id, title, price }) => offersCheck.map((checkedOfferId) => {
@@ -74,14 +74,22 @@ function createPoint(point, listOffers) {
 export default class Point extends AbstractView {
   #point;
   #listOffers;
+  #handleClick;
 
-  constructor({ point, listOffers }) {
+  constructor({ point, listOffers, onClick }) {
     super();
     this.#point = point;
     this.#listOffers = listOffers;
+    this.#handleClick = onClick;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#clickHandler);
   }
 
   get template() {
     return createPoint(this.#point, this.#listOffers);
   }
+
+  #clickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleClick();
+  };
 }

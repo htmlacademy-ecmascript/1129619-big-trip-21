@@ -129,5 +129,9 @@ function getCheckedOffers(typePoint) {
   return checkedOffersId;
 }
 
-export { getRandomPoint, mockOffers, getRandomPoints };
+function getListOffers () {
+  return mockOffers;
+}
+
+export { getRandomPoint, getListOffers, getRandomPoints };
 

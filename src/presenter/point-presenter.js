@@ -1,4 +1,4 @@
-import { render } from '../framework/render';
+import { remove, render, replace } from '../framework/render';
 import ContainerForPoints from '../view/container-points-view';
 import EditingCreationPoint from '../view/editing-creation-point-view';
 import Point from '../view/point-view';
@@ -39,17 +39,24 @@ export default class PointPresenter {
 
     // первым аргументом добавляем список ul, вторым место куда это будет отрисовываться
     render(this.#containerForPoints, this.#pointContainer);
-    // метод getElement возвращает нам компонент (разметку)
+    // метод getElement/element возвращает нам компонент (разметку)
     render(new EditingCreationPoint({ point: this.#listPoints[0], listOffers: this.#listOffers }), this.#containerForPoints.element);
 
     for (let i = 0; i < this.#listPoints.length; i++) {
-      render(new Point({ point: this.#listPoints[i], listOffers: this.#listOffers }), this.#containerForPoints.element);
-      // this.#renderPoint({ point: this.#listPoints[i], listOffers: this.#listOffers });
+      this.#renderPoint(this.#listPoints[i]);
     }
   }
 
-  // #renderPoint() {
-  //   const pointComponent = new Point({ point: this.#listPoints, listOffers: this.#listOffers });
-  //   render(pointComponent, this.#containerForPoints.element);
-  // }
+  #handleEditButtonClick = () => {
+    // логика скрытия/показа точек
+    this.#listPoints.forEach((point) => {
+      console.log(point);
+    });
+  };
+
+  #renderPoint(point) {
+    const pointComponent = new Point({
+      point, listOffers: this.#listOffers, onClick: this.#handleEditButtonClick });
+    render(pointComponent, this.#containerForPoints.element);
+  }
 }

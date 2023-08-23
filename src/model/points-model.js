@@ -1,9 +1,11 @@
-import { getRandomPoints } from '../mock/points';
-import { mockOffers } from '../mock/points';
-
 export default class PointsModel {
-  #points = getRandomPoints();
-  #listOffers = mockOffers;
+  #points;
+  #listOffers;
+
+  constructor (points, listOffers) {
+    this.#points = points;
+    this.#listOffers = listOffers;
+  }
 
   get point() {
     return this.#points;
@@ -13,5 +15,3 @@ export default class PointsModel {
     return this.#listOffers;
   }
 }
-
-// в модели мы получаем массив обьектов с точками.
