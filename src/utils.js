@@ -22,11 +22,11 @@ function filterHoursPoints(date) {
 }
 
 function filterDayMonth(date) {
-  return date ? dayjs(date).format('DD MMM') : '';
+  return date ? dayjs(date).format('MMM DD') : '';
 }
 
 function filterPointDay(date) {
-  return date ? dayjs(date).format('DD-MM-YYYY') : '';
+  return date ? dayjs(date).format('YYYY-MM-DD') : '';
 }
 
 function filterDateForEditorCreator(date) {

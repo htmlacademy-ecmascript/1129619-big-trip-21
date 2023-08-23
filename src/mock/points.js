@@ -1,4 +1,4 @@
-import { POINTS_TYPE } from '../const';
+import { POINTS_TYPE } from './const';
 import { getRandomArrayElement, getRandomPhotos, getRandomDescription, getRandomArbitrary } from './utils';
 import { POINTS_COUNT, CITIES, Time, PRICE } from './const';
 
@@ -18,8 +18,18 @@ const mockOffers = [
       },
       {
         id: 3,
-        title: 'drink alcohol',
+        title: 'Drink alcohol',
         price: 120,
+      },
+      {
+        id: 4,
+        title: 'Dance on top of the car alcohol',
+        price: 1000,
+      },
+      {
+        id: 5,
+        title: 'Fight with the driver',
+        price: 500,
       },
     ]
   },
@@ -27,19 +37,34 @@ const mockOffers = [
     type: 'Flight',
     offers: [
       {
-        id: 4,
+        id: 6,
         title: 'Change place',
         price: 70,
       },
       {
-        id: 5,
+        id: 7,
         title: 'Upgrade to a business class',
         price: 90,
       },
       {
-        id: 6,
+        id: 8,
         title: 'Touch stewardess',
         price: 20,
+      },
+      {
+        id: 9,
+        title: 'Touch Visit the cockpit',
+        price: 200,
+      },
+      {
+        id: 10,
+        title: 'Drink with the pilot',
+        price: 150,
+      },
+      {
+        id: 11,
+        title: 'Optional lunch',
+        price: 33,
       },
     ]
   },
@@ -47,19 +72,29 @@ const mockOffers = [
     type: 'Ship',
     offers: [
       {
-        id: 7,
+        id: 12,
         title: 'Diving',
         price: 30,
       },
       {
-        id: 8,
+        id: 13,
         title: 'Catch an octopus',
         price: 45,
       },
       {
-        id: 9,
+        id: 14,
         title: 'Release octopus',
-        price: 122,
+        price: 342,
+      },
+      {
+        id: 15,
+        title: 'Change cabin',
+        price: 123,
+      },
+      {
+        id: 16,
+        title: 'Dance with the captain',
+        price: 321,
       },
     ]
   },
@@ -85,13 +120,13 @@ function getRandomPoints() {
 }
 
 function getCheckedOffers(typePoint) {
-  const CheckedOffersId = [];
+  const checkedOffersId = [];
   const typeOffersObj = mockOffers.find((item) => item.type === typePoint);
-  const objWithOffers = typeOffersObj.offers.slice(getRandomArbitrary(1, 2), getRandomArbitrary(1, 3));
-  objWithOffers.forEach((el) => {
-    CheckedOffersId.push(el.id);
+  const objWithOffers = typeOffersObj.offers.slice(getRandomArbitrary(1, 2), getRandomArbitrary(1, typeOffersObj.offers.length));
+  objWithOffers.forEach((offer) => {
+    checkedOffersId.push(offer.id);
   });
-  return CheckedOffersId;
+  return checkedOffersId;
 }
 
 export { getRandomPoint, mockOffers, getRandomPoints };
