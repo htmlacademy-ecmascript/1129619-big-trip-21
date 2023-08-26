@@ -29,8 +29,9 @@ function createPhotosPointTemplate(photos) {
     </div>`);
 }
 
-function createEditingCreationPoint({ point, listOffers }) {
+function createEditingCreationPoint(point, listOffers) {
   const { basePrice, description, destination, offersCheck, photos, timeStart, timeEnd, typePoint } = point;
+
   const startDate = filterDateForEditorCreator(timeStart);
   const endDate = filterDateForEditorCreator(timeEnd);
 
@@ -145,6 +146,9 @@ function createEditingCreationPoint({ point, listOffers }) {
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
           <button class="event__reset-btn" type="reset">Cancel</button>
+          <button class="event__rollup-btn" type="button">
+          <span class="visually-hidden">Open event</span>
+          </button>
         </header>
         <section class="event__details">
           <section class="event__section  event__section--offers">
@@ -168,15 +172,25 @@ function createEditingCreationPoint({ point, listOffers }) {
   `;
 }
 
-export default class EditingCreationPoint extends AbstractView {
+export default class EditingCreationPointView extends AbstractView {
   #point;
+  #listOffers;
+  #handleClick;
 
-  constructor(point = BLANK_DATA_TRIP) {
+  constructor({ point = BLANK_DATA_TRIP, listOffers, onClick }) {
     super();
     this.#point = point;
+    this.#listOffers = listOffers;
+    this.#handleClick = onClick;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#clickHandler);
   }
 
   get template() {
-    return createEditingCreationPoint(this.#point);
+    return createEditingCreationPoint(this.#point, this.#listOffers);
   }
+
+  #clickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleClick();
+  };
 }

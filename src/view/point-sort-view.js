@@ -31,7 +31,7 @@ function createPointSort() {
   `;
 }
 
-export default class PointSort extends AbstractView {
+export default class PointSortView extends AbstractView {
   get template() {
     return createPointSort();
   }

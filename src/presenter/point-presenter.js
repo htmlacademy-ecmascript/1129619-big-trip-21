@@ -1,11 +1,11 @@
-import { remove, render, replace } from '../framework/render';
-import ContainerForPoints from '../view/container-points-view';
-import EditingCreationPoint from '../view/editing-creation-point-view';
-import Point from '../view/point-view';
+import { render, replace } from '../framework/render';
+import ContainerForPointsView from '../view/container-points-view';
+import EditingCreationPointView from '../view/editing-creation-point-view';
+import PointView from '../view/point-view';
 
 export default class PointPresenter {
   // создали список ul в который элементами списка будем добавлять li (контент);
-  #containerForPoints = new ContainerForPoints();
+  #containerForPoints = new ContainerForPointsView();
 
   #pointContainer;
   #pointsModel;
@@ -40,23 +40,47 @@ export default class PointPresenter {
     // первым аргументом добавляем список ul, вторым место куда это будет отрисовываться
     render(this.#containerForPoints, this.#pointContainer);
     // метод getElement/element возвращает нам компонент (разметку)
-    render(new EditingCreationPoint({ point: this.#listPoints[0], listOffers: this.#listOffers }), this.#containerForPoints.element);
-
+    // render(new EditingCreationPointView({point: this.#listPoints[0], listOffers: this.#listOffers}), this.#containerForPoints.element);
     for (let i = 0; i < this.#listPoints.length; i++) {
       this.#renderPoint(this.#listPoints[i]);
     }
   }
 
-  #handleEditButtonClick = () => {
-    // логика скрытия/показа точек
-    this.#listPoints.forEach((point) => {
-      console.log(point);
-    });
-  };
-
   #renderPoint(point) {
-    const pointComponent = new Point({
-      point, listOffers: this.#listOffers, onClick: this.#handleEditButtonClick });
+    const escKeyDownHandler = (evt) => {
+      if (evt.key === 'Escape') {
+        evt.preventDefault();
+        replaceEditFormToCardPoint();
+        document.removeEventListener('keydown', escKeyDownHandler);
+      }
+    };
+
+    const pointComponent = new PointView({
+      point,
+      listOffers: this.#listOffers,
+      onClick: () => {
+        replaceCardPointToEditForm();
+        document.addEventListener('keydown', escKeyDownHandler);
+      },
+    });
+
+    const pointEditComponent = new EditingCreationPointView({
+      point,
+      listOffers: this.#listOffers,
+      onClick: () => {
+        replaceEditFormToCardPoint();
+        document.removeEventListener('keydown', escKeyDownHandler);
+      },
+    });
+
+    function replaceCardPointToEditForm() {
+      replace(pointEditComponent, pointComponent);
+    }
+
+    function replaceEditFormToCardPoint() {
+      replace(pointComponent, pointEditComponent);
+    }
+
     render(pointComponent, this.#containerForPoints.element);
   }
 }

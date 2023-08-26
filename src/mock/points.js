@@ -103,6 +103,7 @@ const mockOffers = [
 function getRandomPoint() {
   const typePoint = getRandomArrayElement(POINTS_TYPE);
   return {
+    id: getRandomArbitrary(0, 9999999),
     basePrice: getRandomArrayElement(PRICE),
     typePoint,
     destination: getRandomArrayElement(CITIES),

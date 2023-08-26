@@ -71,7 +71,7 @@ function createPoint(point, listOffers) {
   `;
 }
 
-export default class Point extends AbstractView {
+export default class PointView extends AbstractView {
   #point;
   #listOffers;
   #handleClick;

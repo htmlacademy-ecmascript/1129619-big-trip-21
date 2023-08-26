@@ -28,7 +28,7 @@ function createTripFiltersTemplate() {
   `;
 }
 
-export default class TripFilters extends AbstractView {
+export default class TripFiltersView extends AbstractView {
   get template() {
     return createTripFiltersTemplate();
   }

@@ -6,7 +6,7 @@ function createContainerForPoints() {
   `;
 }
 
-export default class ContainerForPoints extends AbstractView {
+export default class ContainerForPointsView extends AbstractView {
   get template() {
     return createContainerForPoints();
   }
