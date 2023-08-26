@@ -4,7 +4,7 @@ import { POINTS_COUNT, CITIES, Time, PRICE } from './const';
 
 const mockOffers = [
   {
-    type: 'Taxi',
+    type: 'taxi',
     offers: [
       {
         id: 1,
@@ -34,7 +34,7 @@ const mockOffers = [
     ]
   },
   {
-    type: 'Flight',
+    type: 'flight',
     offers: [
       {
         id: 6,
@@ -69,7 +69,7 @@ const mockOffers = [
     ]
   },
   {
-    type: 'Ship',
+    type: 'ship',
     offers: [
       {
         id: 12,

@@ -2,7 +2,7 @@ const DESCRIPTION = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cr
 const PHOTO_URLS = 'https://loremflickr.com/248/152?random=';
 const POINTS_COUNT = 10;
 const CITIES = ['Istanbul', 'Moscow', 'California', 'Kazan', 'Vladivostok', 'Usuriysk', 'Tihvan'];
-const POINTS_TYPE = ['Taxi', 'Ship', 'Flight'];
+const POINTS_TYPE = ['taxi', 'ship', 'flight'];
 const Time = {
   START:['2023-08-06T00:05:00.845Z', '2023-08-07T01:10:20.845Z', '2023-08-08T03:19:43.845Z', '2023-08-09T04:16:32.845Z', '2023-08-06T05:28:12.845Z',],
   END: ['2023-08-11T10:30:20.845Z', '2023-08-12T11:13:21.845Z', '2023-08-13T12:00:02.845Z', '2023-08-14T13:42:32.845Z', '2023-08-15T14:53:52.845Z',],
