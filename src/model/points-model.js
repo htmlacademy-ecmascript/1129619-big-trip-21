@@ -1,9 +1,17 @@
-export default class PointModel {
-  constructor(points) {
-    this.points = points;
+export default class PointsModel {
+  #points;
+  #listOffers;
+
+  constructor (points, listOffers) {
+    this.#points = points;
+    this.#listOffers = listOffers;
   }
 
-  getPoints() {
-    return this.points;
+  get point() {
+    return this.#points;
+  }
+
+  get listOffers() {
+    return this.#listOffers;
   }
 }

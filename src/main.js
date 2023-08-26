@@ -1,22 +1,26 @@
-import InfoTrip from './view/info-trip-view';
-import FiltersTrip from './view/filters-view';
-import TripPresenter from './presenter/trip-presenter';
-import PointModel from './model/points-model';
-import { render, RenderPosition } from './render';
-import { getRandomPoints } from './mock/points';
+import { render, RenderPosition } from './framework/render';
+import TripInfo from './view/trip-info-view';
+import TripFilters from './view/trip-filters-view';
+import PointSort from './view/point-sort-view';
+import PointPresenter from './presenter/point-presenter';
+import PointsModel from './model/points-model';
+import { getRandomPoints, getListOffers } from './mock/points';
 
 const siteHeaderElement = document.querySelector('.page-header');
-const siteTripMainElement = siteHeaderElement.querySelector('.trip-main');
-const siteFiltersControlElement = siteHeaderElement.querySelector('.trip-controls__filters');
 const siteMainElement = document.querySelector('.page-main');
-const tripEvents = siteMainElement.querySelector('.trip-events');
+const siteTripMainElement = siteHeaderElement.querySelector('.trip-main');
+const siteTripFiltersElement = siteHeaderElement.querySelector('.trip-controls__filters');
+const tripEventsElement = siteMainElement.querySelector('.trip-events');
 
-const pointModel = new PointModel(getRandomPoints());
-const tripPresenter = new TripPresenter({ tripContainer: tripEvents, pointModel });
+// мы создали модель обьект с ключом points и значением массива обьектов с точками
+const pointsModel = new PointsModel(getRandomPoints(), getListOffers());
 
-render(new InfoTrip(), siteTripMainElement, RenderPosition.AFTERBEGIN);
-render(new FiltersTrip(), siteFiltersControlElement);
+// аргументом мы передаем кусок разметки,
+// где у нас будет распологаться содержимое презентера
+const pointPresenter = new PointPresenter({ pointContainer: tripEventsElement, pointsModel });
 
-tripPresenter.init();
+render(new TripInfo(), siteTripMainElement, RenderPosition.AFTERBEGIN);
+render(new TripFilters(), siteTripFiltersElement);
+render(new PointSort(), tripEventsElement);
 
-
+pointPresenter.init();

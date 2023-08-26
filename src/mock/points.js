@@ -1,118 +1,138 @@
-import { POINTS_TYPE } from '../const';
-import { getRandomArrayElement, getRandomPhotos, getRandomDescription } from './utils';
-import { POINTS_COUNT } from './const';
+import { POINTS_TYPE } from './const';
+import { getRandomArrayElement, getRandomPhotos, getRandomDescription, getRandomArbitrary } from './utils';
+import { POINTS_COUNT, CITIES, Time, PRICE } from './const';
 
 const mockOffers = [
   {
-    'type': 'taxi',
-    'offers': [
+    type: 'taxi',
+    offers: [
       {
-        'id': 1,
-        'title': 'Choose the radio station',
-        'price': 60,
+        id: 1,
+        title: 'Choose the radio station',
+        price: 60,
       },
       {
-        'id': 2,
-        'title': 'Smoking in the cabin',
-        'price': 100,
+        id: 2,
+        title: 'Smoking in the cabin',
+        price: 100,
       },
       {
-        'id': 3,
-        'title': 'drink alcohol',
-        'price': 120,
-      },
-    ]
-  },
-  {
-    'type': 'flight',
-    'offers': [
-      {
-        'id': 4,
-        'title': 'Change place',
-        'price': 70,
+        id: 3,
+        title: 'Drink alcohol',
+        price: 120,
       },
       {
-        'id': 5,
-        'title': 'Upgrede to a business class',
-        'price': 90,
+        id: 4,
+        title: 'Dance on top of the car alcohol',
+        price: 1000,
       },
       {
-        'id': 6,
-        'title': 'Touch stewardess',
-        'price': 20,
+        id: 5,
+        title: 'Fight with the driver',
+        price: 500,
       },
     ]
   },
   {
-    'type': 'ship',
-    'offers': [
+    type: 'flight',
+    offers: [
       {
-        'id': 7,
-        'title': 'Diving',
-        'price': 30,
+        id: 6,
+        title: 'Change place',
+        price: 70,
       },
       {
-        'id': 8,
-        'title': 'Catch an octopus',
-        'price': 45,
+        id: 7,
+        title: 'Upgrade to a business class',
+        price: 90,
       },
       {
-        'id': 9,
-        'title': 'Release octopus',
-        'price': 122,
+        id: 8,
+        title: 'Touch stewardess',
+        price: 20,
+      },
+      {
+        id: 9,
+        title: 'Touch Visit the cockpit',
+        price: 200,
+      },
+      {
+        id: 10,
+        title: 'Drink with the pilot',
+        price: 150,
+      },
+      {
+        id: 11,
+        title: 'Optional lunch',
+        price: 33,
       },
     ]
   },
-];
-
-const mockPoints = [
   {
-    type: getRandomArrayElement(POINTS_TYPE),
-    destination: 'Moscow',
-    timeStart: '2021-02-10 00:10',
-    timeEnd: '2021-02-10 00:30',
-    additionally: getRandomArrayElement(mockOffers),
-    description: getRandomDescription(),
-    photos: getRandomPhotos(),
-  },
-  {
-    type: getRandomArrayElement(POINTS_TYPE),
-    destination: 'London',
-    timeStart: '2021-02-10 00:20',
-    timeEnd: '2021-02-10 13:00',
-    additionally: getRandomArrayElement(mockOffers),
-    description: getRandomDescription(),
-    photos: getRandomPhotos(),
-  },
-  {
-    type: getRandomArrayElement(POINTS_TYPE),
-    destination: 'Paris',
-    timeStart: '2021-04-03 00:00',
-    timeEnd: '2021-04-05 20:00',
-    additionally: getRandomArrayElement(mockOffers),
-    description: getRandomDescription(),
-    photos: getRandomPhotos(),
-  },
-  {
-    type: getRandomArrayElement(POINTS_TYPE),
-    destination: 'Istambul',
-    timeStart: '2021-04-03 00:00',
-    timeEnd: '2021-04-04 02:00',
-    additionally: getRandomArrayElement(mockOffers),
-    description: getRandomDescription(),
-    photos: getRandomPhotos(),
+    type: 'ship',
+    offers: [
+      {
+        id: 12,
+        title: 'Diving',
+        price: 30,
+      },
+      {
+        id: 13,
+        title: 'Catch an octopus',
+        price: 45,
+      },
+      {
+        id: 14,
+        title: 'Release octopus',
+        price: 342,
+      },
+      {
+        id: 15,
+        title: 'Change cabin',
+        price: 123,
+      },
+      {
+        id: 16,
+        title: 'Dance with the captain',
+        price: 321,
+      },
+    ]
   },
 ];
 
 function getRandomPoint() {
-  return getRandomArrayElement(mockPoints);
+  const typePoint = getRandomArrayElement(POINTS_TYPE);
+  return {
+    id: getRandomArbitrary(0, 9999999),
+    basePrice: getRandomArrayElement(PRICE),
+    typePoint,
+    destination: getRandomArrayElement(CITIES),
+    timeStart: getRandomArrayElement(Time.START),
+    timeEnd: getRandomArrayElement(Time.END),
+    offersCheck: getCheckedOffers(typePoint),
+    description: getRandomDescription(),
+    photos: getRandomPhotos(),
+    isFavorite: Boolean(getRandomArbitrary(0, 1)),
+  };
 }
 
 function getRandomPoints() {
   return Array.from({ length: POINTS_COUNT }, getRandomPoint);
-
 }
 
+function getCheckedOffers(typePoint) {
+  const checkedOffersId = [];
+  const typeOffersObj = mockOffers.find((item) => item.type === typePoint);
+  const objWithOffers = typeOffersObj.offers.slice(getRandomArbitrary(1, 2), getRandomArbitrary(1, typeOffersObj.offers.length));
+  objWithOffers.forEach((offer) => {
+    checkedOffersId.push(offer.id);
+  });
+  return checkedOffersId;
+}
 
-export { getRandomPoint, mockOffers, getRandomPoints };
+function getListOffers () {
+  return mockOffers;
+}
+
+export { getRandomPoint, getListOffers, getRandomPoints };
 
