@@ -33,4 +33,16 @@ function filterDateForEditorCreator(date) {
   return date ? dayjs(date).format('DD/MM/YY HH:mm') : '';
 }
 
-export { getTimeInterval, filterHoursPoints, filterDayMonth, filterPointDay, filterDateForEditorCreator };
+function isPointFuture(dateStart) {
+  return dayjs().isBefore(dayjs(dateStart));
+}
+
+function isPointPresent(dateStart, dateEnd) {
+  return dayjs().isAfter(dayjs(dateStart)) && dayjs().isBefore(dayjs(dateEnd));
+}
+
+function isPointPast(dateEnd) {
+  return dayjs().isAfter(dayjs(dateEnd));
+}
+
+export { getTimeInterval, filterHoursPoints, filterDayMonth, filterPointDay, filterDateForEditorCreator, isPointFuture, isPointPresent, isPointPast };

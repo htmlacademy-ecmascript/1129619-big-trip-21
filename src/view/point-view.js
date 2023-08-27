@@ -3,8 +3,8 @@ import {
   getTimeInterval,
   filterHoursPoints,
   filterDayMonth,
-  filterPointDay
-} from '../utils';
+  filterPointDay,
+} from '../utils/time';
 
 function createPoint(point, listOffers) {
   const { basePrice, destination, isFavorite, offersCheck, timeStart, timeEnd, typePoint } = point;
@@ -18,8 +18,8 @@ function createPoint(point, listOffers) {
   const typeOffersObj = listOffers.find((offer) => offer.type === typePoint);
   const { offers } = typeOffersObj;
 
-  const createTypeOffersTemplate = () => offers.map(({ id, title, price }) => offersCheck.map((checkedOfferId) => {
-    if (checkedOfferId === id) {
+  const createTypeOffersTemplate = () => offers.map(({ idOffer, title, price }) => offersCheck.map((checkedOfferId) => {
+    if (checkedOfferId === idOffer) {
       return `<li class="event__offer">
               <span class="event__offer-title">${title}</span>
               &plus;&euro;&nbsp;
