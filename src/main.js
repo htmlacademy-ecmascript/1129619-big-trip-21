@@ -5,6 +5,7 @@ import PointSort from './view/point-sort-view';
 import PointPresenter from './presenter/point-presenter';
 import PointsModel from './model/points-model';
 import { getRandomPoints, getListOffers } from './mock/points';
+import { generateFilter } from './mock/filter';
 
 const siteHeaderElement = document.querySelector('.page-header');
 const siteMainElement = document.querySelector('.page-main');
@@ -19,8 +20,10 @@ const pointsModel = new PointsModel(getRandomPoints(), getListOffers());
 // где у нас будет распологаться содержимое презентера
 const pointPresenter = new PointPresenter({ pointContainer: tripEventsElement, pointsModel });
 
+const filters = generateFilter(pointsModel.point);
+
 render(new TripInfo(), siteTripMainElement, RenderPosition.AFTERBEGIN);
-render(new TripFilters(), siteTripFiltersElement);
+render(new TripFilters({ filters }), siteTripFiltersElement);
 render(new PointSort(), tripEventsElement);
 
 pointPresenter.init();

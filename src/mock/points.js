@@ -7,27 +7,27 @@ const mockOffers = [
     type: 'taxi',
     offers: [
       {
-        id: 1,
+        idOffer: 1,
         title: 'Choose the radio station',
         price: 60,
       },
       {
-        id: 2,
+        idOffer: 2,
         title: 'Smoking in the cabin',
         price: 100,
       },
       {
-        id: 3,
+        idOffer: 3,
         title: 'Drink alcohol',
         price: 120,
       },
       {
-        id: 4,
+        idOffer: 4,
         title: 'Dance on top of the car alcohol',
         price: 1000,
       },
       {
-        id: 5,
+        idOffer: 5,
         title: 'Fight with the driver',
         price: 500,
       },
@@ -37,32 +37,32 @@ const mockOffers = [
     type: 'flight',
     offers: [
       {
-        id: 6,
+        idOffer: 6,
         title: 'Change place',
         price: 70,
       },
       {
-        id: 7,
+        idOffer: 7,
         title: 'Upgrade to a business class',
         price: 90,
       },
       {
-        id: 8,
+        idOffer: 8,
         title: 'Touch stewardess',
         price: 20,
       },
       {
-        id: 9,
+        idOffer: 9,
         title: 'Touch Visit the cockpit',
         price: 200,
       },
       {
-        id: 10,
+        idOffer: 10,
         title: 'Drink with the pilot',
         price: 150,
       },
       {
-        id: 11,
+        idOffer: 11,
         title: 'Optional lunch',
         price: 33,
       },
@@ -72,27 +72,27 @@ const mockOffers = [
     type: 'ship',
     offers: [
       {
-        id: 12,
+        idOffer: 12,
         title: 'Diving',
         price: 30,
       },
       {
-        id: 13,
+        idOffer: 13,
         title: 'Catch an octopus',
         price: 45,
       },
       {
-        id: 14,
+        idOffer: 14,
         title: 'Release octopus',
         price: 342,
       },
       {
-        id: 15,
+        idOffer: 15,
         title: 'Change cabin',
         price: 123,
       },
       {
-        id: 16,
+        idOffer: 16,
         title: 'Dance with the captain',
         price: 321,
       },
@@ -125,7 +125,7 @@ function getCheckedOffers(typePoint) {
   const typeOffersObj = mockOffers.find((item) => item.type === typePoint);
   const objWithOffers = typeOffersObj.offers.slice(getRandomArbitrary(1, 2), getRandomArbitrary(1, typeOffersObj.offers.length));
   objWithOffers.forEach((offer) => {
-    checkedOffersId.push(offer.id);
+    checkedOffersId.push(offer.idOffer);
   });
   return checkedOffersId;
 }

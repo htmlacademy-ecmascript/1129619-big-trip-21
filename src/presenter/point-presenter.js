@@ -2,6 +2,7 @@ import { render, replace } from '../framework/render';
 import ContainerForPointsView from '../view/container-points-view';
 import EditingCreationPointView from '../view/editing-creation-point-view';
 import PointView from '../view/point-view';
+import NoPointView from '../view/no-point-view';
 
 export default class PointPresenter {
   // создали список ul в который элементами списка будем добавлять li (контент);
@@ -37,13 +38,7 @@ export default class PointPresenter {
     //та же логика, но для списка оферов. Мы из модели получили данные и обработали их в презентере
     this.#listOffers = [...this.#pointsModel.listOffers];
 
-    // первым аргументом добавляем список ul, вторым место куда это будет отрисовываться
-    render(this.#containerForPoints, this.#pointContainer);
-    // метод getElement/element возвращает нам компонент (разметку)
-    // render(new EditingCreationPointView({point: this.#listPoints[0], listOffers: this.#listOffers}), this.#containerForPoints.element);
-    for (let i = 0; i < this.#listPoints.length; i++) {
-      this.#renderPoint(this.#listPoints[i]);
-    }
+    this.#renderPointsList();
   }
 
   #renderPoint(point) {
@@ -71,6 +66,11 @@ export default class PointPresenter {
         replaceEditFormToCardPoint();
         document.removeEventListener('keydown', escKeyDownHandler);
       },
+      // отправка формы на сервер, заменяет форму на точку
+      onFormSubmit: () => {
+        replaceEditFormToCardPoint();
+        document.removeEventListener('keydown', escKeyDownHandler);
+      },
     });
 
     function replaceCardPointToEditForm() {
@@ -82,5 +82,19 @@ export default class PointPresenter {
     }
 
     render(pointComponent, this.#containerForPoints.element);
+  }
+
+  #renderPointsList() {
+    // если нет точек, то вставляем заглушку
+    if(!this.#listPoints.length) {
+      render(new NoPointView(), this.#pointContainer);
+    }
+    // первым аргументом добавляем список ul, вторым место куда это будет отрисовываться
+    render(this.#containerForPoints, this.#pointContainer);
+    // метод getElement/element возвращает нам компонент (разметку)
+    // render(new EditingCreationPointView({point: this.#listPoints[0], listOffers: this.#listOffers}), this.#containerForPoints.element);
+    for (let i = 0; i < this.#listPoints.length; i++) {
+      this.#renderPoint(this.#listPoints[i]);
+    }
   }
 }

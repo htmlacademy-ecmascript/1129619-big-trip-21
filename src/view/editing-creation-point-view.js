@@ -1,10 +1,9 @@
 import AbstractView from '../framework/view/abstract-view';
-import { filterDateForEditorCreator } from '../utils';
+import { filterDateForEditorCreator } from '../utils/time';
 
 const BLANK_DATA_TRIP = {
-  type: 'Flight',
+  type: 'flight',
   basePrice: 0,
-  typePoint: 'Flight',
   destination: null,
   timeStart: new Date(),
   timeEnd: null,
@@ -30,7 +29,7 @@ function createPhotosPointTemplate(photos) {
 }
 
 function createEditingCreationPoint(point, listOffers) {
-  const { basePrice, description, destination, offersCheck, photos, timeStart, timeEnd, typePoint } = point;
+  const { id, basePrice, description, destination, offersCheck, photos, timeStart, timeEnd, typePoint } = point;
 
   const startDate = filterDateForEditorCreator(timeStart);
   const endDate = filterDateForEditorCreator(timeEnd);
@@ -38,15 +37,15 @@ function createEditingCreationPoint(point, listOffers) {
   const typeOffersObj = listOffers.find((item) => item.type === typePoint);
   const { offers } = typeOffersObj;
 
-  const createListOffersForPointTemplate = offers.map(({ id, title, price }) => `
+  const createListOffersForPointTemplate = offers.map(({ idOffer, title, price }) => `
     <div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage"
-      ${offersCheck.map((idOffer) => {
-    if (idOffer === id) {
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${idOffer}" type="checkbox" name="event-offer-luggage"
+      ${offersCheck.map((idOfferCheck) => {
+    if (idOfferCheck === idOffer) {
       return 'checked';
     }
   }).join('')} >
-    <label class="event__offer-label" for="event-offer-luggage-1">
+    <label class="event__offer-label" for="event-offer-luggage-${idOffer}">
     <span class="event__offer-title">${title}</span>
     &plus;&euro;&nbsp;
     <span class="event__offer-price">${price}</span>
@@ -129,19 +128,19 @@ function createEditingCreationPoint(point, listOffers) {
           </div>
 
           <div class="event__field-group  event__field-group--time">
-            <label class="visually-hidden" for="event-start-time-1">From</label>
-            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startDate}">
+            <label class="visually-hidden" for="event-start-time-${id}">From</label>
+            <input class="event__input  event__input--time" id="event-start-time-${id}" type="text" name="event-start-time" value="${startDate}">
             &mdash;
-            <label class="visually-hidden" for="event-end-time-1">To</label>
-            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${endDate}">
+            <label class="visually-hidden" for="event-end-time-${id}">To</label>
+            <input class="event__input  event__input--time" id="event-end-time-${id}" type="text" name="event-end-time" value="${endDate}">
           </div>
 
           <div class="event__field-group  event__field-group--price">
-            <label class="event__label" for="event-price-1">
+            <label class="event__label" for="event-price-${id}">
               <span class="visually-hidden">Price</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
+            <input class="event__input  event__input--price" id="event-price-${id}" type="text" name="event-price" value="${basePrice}">
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -176,12 +175,15 @@ export default class EditingCreationPointView extends AbstractView {
   #point;
   #listOffers;
   #handleClick;
+  #handleFormSubmit;
 
-  constructor({ point = BLANK_DATA_TRIP, listOffers, onClick }) {
+  constructor({ point = BLANK_DATA_TRIP, listOffers, onClick, onFormSubmit }) {
     super();
     this.#point = point;
     this.#listOffers = listOffers;
     this.#handleClick = onClick;
+    this.#handleFormSubmit = onFormSubmit;
+    this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#clickHandler);
   }
 
@@ -192,5 +194,10 @@ export default class EditingCreationPointView extends AbstractView {
   #clickHandler = (evt) => {
     evt.preventDefault();
     this.#handleClick();
+  };
+
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFormSubmit();
   };
 }
