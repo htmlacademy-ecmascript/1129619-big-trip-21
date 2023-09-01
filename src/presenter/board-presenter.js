@@ -48,6 +48,7 @@ export default class BoardPresenter {
   #renderPoint(point) {
     const pointPresenter = new PointPresenter({
       containerForPoints: this.#containerForPoints.element,
+      listOffers: this.#listOffers,
     });
     pointPresenter.init(point);
     // const escKeyDownHandler = (evt) => {

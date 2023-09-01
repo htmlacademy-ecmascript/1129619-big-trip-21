@@ -11,8 +11,9 @@ export default class PointPresenter {
   #pointEditComponent;
 
 
-  constructor({ containerForPoints }) {
+  constructor({ containerForPoints, listOffers }) {
     this.#containerForPoints = containerForPoints;
+    this.#listOffers = listOffers;
   }
 
   init(point) {
@@ -21,15 +22,15 @@ export default class PointPresenter {
     this.#pointComponent = new PointView({
       point: this.#point,
       listOffers: this.#listOffers,
-      onClick: this.#handleEditClick,
+      onClick: this.#handlePointClick,
     });
 
     this.#pointEditComponent = new EditingCreationPointView({
       point: this.#point,
       listOffers: this.#listOffers,
-      onClick: this.#handlePointClick(),
+      onClick: this.#handleEditClick,
       // отправка формы на сервер, заменяет форму на точку
-      onFormSubmit: this.#handlePointSubmit(),
+      onFormSubmit: this.#handlePointSubmit,
     });
 
     render(this.#pointComponent, this.#containerForPoints);
@@ -61,6 +62,6 @@ export default class PointPresenter {
   };
 
   #handlePointSubmit = () => {
-    this.#replaceCardPointToEditForm();
+    this.#replaceEditFormToCardPoint();
   };
 }
