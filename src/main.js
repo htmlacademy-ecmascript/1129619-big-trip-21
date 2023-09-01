@@ -1,8 +1,8 @@
 import { render, RenderPosition } from './framework/render';
 import TripInfo from './view/trip-info-view';
 import TripFilters from './view/trip-filters-view';
-import PointSort from './view/point-sort-view';
-import PointPresenter from './presenter/point-presenter';
+// import PointSort from './view/point-sort-view';
+import BoardPresenter from './presenter/board-presenter';
 import PointsModel from './model/points-model';
 import { getRandomPoints, getListOffers } from './mock/points';
 import { generateFilter } from './mock/filter';
@@ -18,12 +18,12 @@ const pointsModel = new PointsModel(getRandomPoints(), getListOffers());
 
 // аргументом мы передаем кусок разметки,
 // где у нас будет распологаться содержимое презентера
-const pointPresenter = new PointPresenter({ pointContainer: tripEventsElement, pointsModel });
+const boardPresenter = new BoardPresenter({ pointContainer: tripEventsElement, pointsModel });
 
 const filters = generateFilter(pointsModel.point);
 
 render(new TripInfo(), siteTripMainElement, RenderPosition.AFTERBEGIN);
 render(new TripFilters({ filters }), siteTripFiltersElement);
-render(new PointSort(), tripEventsElement);
+// render(new PointSort(), tripEventsElement);
 
-pointPresenter.init();
+boardPresenter.init();
