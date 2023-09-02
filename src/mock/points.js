@@ -1,6 +1,7 @@
 import { POINTS_TYPE } from './const';
 import { getRandomArrayElement, getRandomPhotos, getRandomDescription, getRandomArbitrary } from './utils';
 import { POINTS_COUNT, CITIES, Time, PRICE } from './const';
+import { nanoid } from 'nanoid';
 
 const mockOffers = [
   {
@@ -103,7 +104,7 @@ const mockOffers = [
 function getRandomPoint() {
   const typePoint = getRandomArrayElement(POINTS_TYPE);
   return {
-    id: getRandomArbitrary(0, 9999999),
+    id: nanoid(),
     basePrice: getRandomArrayElement(PRICE),
     typePoint,
     destination: getRandomArrayElement(CITIES),

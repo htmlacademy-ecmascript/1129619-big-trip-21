@@ -8,4 +8,8 @@ const filter = {
   [FilterType.PAST]: (points) => points.filter((point) => isPointPast(point.dateEnd)),
 };
 
-export { filter };
+function updateItem(items, update) {
+  return items.map((item) => item.id === update.id ? update : item);
+}
+
+export { filter, updateItem };

@@ -1,10 +1,9 @@
 import { render } from '../framework/render';
 import ContainerForPointsView from '../view/container-points-view';
-// import EditingCreationPointView from '../view/editing-creation-point-view';
-// import PointView from '../view/point-view';
 import NoPointView from '../view/no-point-view';
 import PointSort from '../view/point-sort-view';
 import PointPresenter from './point-presenter';
+import { updateItem } from '../utils/common';
 
 export default class BoardPresenter {
   // создали список ul в который элементами списка будем добавлять li (контент);
@@ -12,10 +11,14 @@ export default class BoardPresenter {
   #noPointComponent = new NoPointView();
   #pointSort = new PointSort();
 
-  #pointContainer;
-  #pointsModel;
-  #listPoints;
-  #listOffers;
+  #points = [];
+
+  #pointContainer = null;
+  #pointsModel = null;
+  #listPoints = null;
+  #listOffers = null;
+
+  #pointPresenters = new Map();
 
   // передали в конструктор аргумент для того, что бы можно
   // было в мейне добавить елумент (куда будет отрисовываться), для того что бы класс
@@ -49,48 +52,16 @@ export default class BoardPresenter {
     const pointPresenter = new PointPresenter({
       containerForPoints: this.#containerForPoints.element,
       listOffers: this.#listOffers,
+      onDataChange: this.#handlePointChange,
+      onModeChange: this.#handleModeChange,
     });
     pointPresenter.init(point);
-    // const escKeyDownHandler = (evt) => {
-    //   if (evt.key === 'Escape') {
-    //     evt.preventDefault();
-    //     replaceEditFormToCardPoint();
-    //     document.removeEventListener('keydown', escKeyDownHandler);
-    //   }
-    // };
+    this.#pointPresenters.set(point.id, pointPresenter);
+  }
 
-    // const pointComponent = new PointView({
-    //   point,
-    //   listOffers: this.#listOffers,
-    //   onClick: () => {
-    //     replaceCardPointToEditForm();
-    //     document.addEventListener('keydown', escKeyDownHandler);
-    //   },
-    // });
-
-    // const pointEditComponent = new EditingCreationPointView({
-    //   point,
-    //   listOffers: this.#listOffers,
-    //   onClick: () => {
-    //     replaceEditFormToCardPoint();
-    //     document.removeEventListener('keydown', escKeyDownHandler);
-    //   },
-    //   // отправка формы на сервер, заменяет форму на точку
-    //   onFormSubmit: () => {
-    //     replaceEditFormToCardPoint();
-    //     document.removeEventListener('keydown', escKeyDownHandler);
-    //   },
-    // });
-
-    // function replaceCardPointToEditForm() {
-    //   replace(pointEditComponent, pointComponent);
-    // }
-
-    // function replaceEditFormToCardPoint() {
-    //   replace(pointComponent, pointEditComponent);
-    // }
-
-    // render(pointComponent, this.#containerForPoints.element);
+  #clearPointList() {
+    this.#pointPresenters.forEach((presenter) => presenter.destroy());
+    this.#pointPresenters.clear();
   }
 
   #renderPointsList() {
@@ -103,11 +74,19 @@ export default class BoardPresenter {
     // первым аргументом добавляем список ul, вторым место куда это будет отрисовываться
     render(this.#containerForPoints, this.#pointContainer);
     // метод getElement/element возвращает нам компонент (разметку)
-    // render(new EditingCreationPointView({point: this.#listPoints[0], listOffers: this.#listOffers}), this.#containerForPoints.element);
     for (let i = 0; i < this.#listPoints.length; i++) {
       this.#renderPoint(this.#listPoints[i]);
     }
   }
+
+  #handleModeChange = () => {
+    this.#pointPresenters.forEach((presenter) => presenter.resetView());
+  };
+
+  #handlePointChange = (updatePoint) => {
+    this.#points = updateItem(this.#points, updatePoint);
+    this.#pointPresenters.get(updatePoint.id).init(updatePoint);
+  };
 
   #renderNoPoints() {
     render(this.#noPointComponent, this.#pointContainer);
