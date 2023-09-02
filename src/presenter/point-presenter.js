@@ -1,100 +1,117 @@
-import { render, replace } from '../framework/render';
-import ContainerForPointsView from '../view/container-points-view';
+import { render, replace, remove } from '../framework/render';
 import EditingCreationPointView from '../view/editing-creation-point-view';
 import PointView from '../view/point-view';
-import NoPointView from '../view/no-point-view';
+
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING',
+};
 
 export default class PointPresenter {
-  // создали список ul в который элементами списка будем добавлять li (контент);
-  #containerForPoints = new ContainerForPointsView();
+  #containerForPoints = null;
+  #pointComponent = null;
+  #pointEditComponent = null;
 
-  #pointContainer;
-  #pointsModel;
-  #listPoints;
-  #listOffers;
+  #handleDataChange = null;
+  #handleModeChange = null;
 
-  // передали в конструктор аргумент для того, что бы можно
-  // было в мейне добавить елумент (куда будет отрисовываться), для того что бы класс
-  // мог что то в себя принимать необходим конструктор
-  // Для того что бы что то ДОБАВЛЯТЬ в наши классы первым делом надо
-  // добавлять это в конструктор, в конструктор мы добавляем что то абстрактное,
-  // а что то конкретное уже передается аргументом в main.js
-  constructor({ pointContainer, pointsModel }) {
-    this.#pointContainer = pointContainer;
-    // в main мы передали вторым аргументом точки маршрута и тут мы их обрабатываем.
-    // или от противного: тут мы даем возможность presenter обработать наши точки маршрута
-    this.#pointsModel = pointsModel;
+  #point = null;
+  #listOffers = null;
+  #mode = Mode.DEFAULT;
+
+
+  constructor({ containerForPoints, listOffers, onDataChange, onModeChange }) {
+    this.#containerForPoints = containerForPoints;
+    this.#listOffers = listOffers;
+    this.#handleDataChange = onDataChange;
+    this.#handleModeChange = onModeChange;
   }
 
-  init() {
-    // создаем новое свойство listPoints и в него сохраняем все, что нам вернет
-    // getPoint() с помощью спред оператора.
-    //
-    // сделано это для упращения на момент обучения, что бы все находилось в одном месте,
-    // в презентере, далее это будет перенесено в модель.
-    //
-    //по факту это нарушение правил MVP
-    this.#listPoints = [...this.#pointsModel.point];
-    //та же логика, но для списка оферов. Мы из модели получили данные и обработали их в презентере
-    this.#listOffers = [...this.#pointsModel.listOffers];
+  init(point) {
+    this.#point = point;
 
-    this.#renderPointsList();
-  }
+    const prevPointComponent = this.#pointComponent;
+    const prevPointEditComponent = this.#pointEditComponent;
 
-  #renderPoint(point) {
-    const escKeyDownHandler = (evt) => {
-      if (evt.key === 'Escape') {
-        evt.preventDefault();
-        replaceEditFormToCardPoint();
-        document.removeEventListener('keydown', escKeyDownHandler);
-      }
-    };
-
-    const pointComponent = new PointView({
-      point,
+    this.#pointComponent = new PointView({
+      point: this.#point,
       listOffers: this.#listOffers,
-      onClick: () => {
-        replaceCardPointToEditForm();
-        document.addEventListener('keydown', escKeyDownHandler);
-      },
+      onClick: this.#handlePointClick,
+      onFavoriteClick: this.#handleFavoriteClick,
     });
 
-    const pointEditComponent = new EditingCreationPointView({
-      point,
+    this.#pointEditComponent = new EditingCreationPointView({
+      point: this.#point,
       listOffers: this.#listOffers,
-      onClick: () => {
-        replaceEditFormToCardPoint();
-        document.removeEventListener('keydown', escKeyDownHandler);
-      },
+      onClick: this.#handleEditClick,
       // отправка формы на сервер, заменяет форму на точку
-      onFormSubmit: () => {
-        replaceEditFormToCardPoint();
-        document.removeEventListener('keydown', escKeyDownHandler);
-      },
+      onFormSubmit: this.#handlePointSubmit,
     });
 
-    function replaceCardPointToEditForm() {
-      replace(pointEditComponent, pointComponent);
+    if (prevPointComponent === null || prevPointEditComponent === null) {
+      render(this.#pointComponent, this.#containerForPoints);
+      return;
     }
 
-    function replaceEditFormToCardPoint() {
-      replace(pointComponent, pointEditComponent);
+    //проводим проверку для того, чтобы не пытаться
+    // заменить то, что не было отрисовано
+    if (this.#mode === Mode.DEFAULT) {
+      replace(this.#pointComponent, prevPointComponent);
     }
 
-    render(pointComponent, this.#containerForPoints.element);
+    if (this.#mode === Mode.EDITING) {
+      replace(this.#pointEditComponent, prevPointEditComponent);
+    }
+
+    remove(prevPointComponent);
+    remove(prevPointEditComponent);
   }
 
-  #renderPointsList() {
-    // если нет точек, то вставляем заглушку
-    if(!this.#listPoints.length) {
-      render(new NoPointView(), this.#pointContainer);
-    }
-    // первым аргументом добавляем список ul, вторым место куда это будет отрисовываться
-    render(this.#containerForPoints, this.#pointContainer);
-    // метод getElement/element возвращает нам компонент (разметку)
-    // render(new EditingCreationPointView({point: this.#listPoints[0], listOffers: this.#listOffers}), this.#containerForPoints.element);
-    for (let i = 0; i < this.#listPoints.length; i++) {
-      this.#renderPoint(this.#listPoints[i]);
+  destroy() {
+    remove(this.#pointComponent);
+    remove(this.#pointEditComponent);
+  }
+
+  resetView() {
+    if (this.#mode !== Mode.DEFAULT) {
+      this.#replaceEditFormToCardPoint();
     }
   }
+
+  #replaceCardPointToEditForm() {
+    replace(this.#pointEditComponent, this.#pointComponent);
+    document.addEventListener('keydown', this.#escKeyDownHandler);
+    this.#handleModeChange();
+    this.#mode = Mode.EDITING;
+  }
+
+  #replaceEditFormToCardPoint() {
+    replace(this.#pointComponent, this.#pointEditComponent);
+    document.removeEventListener('keydown', this.#escKeyDownHandler);
+    this.#mode = Mode.DEFAULT;
+  }
+
+  #escKeyDownHandler = (evt) => {
+    if (evt.key === 'Escape') {
+      evt.preventDefault();
+      this.#replaceEditFormToCardPoint();
+    }
+  };
+
+  #handleEditClick = () => {
+    this.#replaceEditFormToCardPoint();
+  };
+
+  #handlePointClick = () => {
+    this.#replaceCardPointToEditForm();
+  };
+
+  #handleFavoriteClick = () => {
+    this.#handleDataChange({...this.#point, isFavorite: !this.#point.isFavorite});
+  };
+
+  #handlePointSubmit = (point) => {
+    this.#handleDataChange(point);
+    this.#replaceEditFormToCardPoint();
+  };
 }
