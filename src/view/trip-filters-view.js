@@ -10,7 +10,7 @@ function createFilterItemTemplate(filter, isChecked) {
       type="radio"
       name="trip-filter"
       value="${type}"
-      ${isChecked ? 'checked' : ''}
+      ${isChecked ? '' : 'checked'}
       ${isAvailability ? '' : 'disabled'}>
       <label class="trip-filters__filter-label" for="filter-${type}">${type}</label>
     </div>`
@@ -19,7 +19,7 @@ function createFilterItemTemplate(filter, isChecked) {
 
 function createTripFiltersTemplate(filterItems) {
   const filterItemsTemplate = filterItems
-    .map((filter, index) => createFilterItemTemplate(filter, index === 0))
+    .map((filter, index) => createFilterItemTemplate(filter, index))
     .join('');
 
   return (
@@ -31,7 +31,7 @@ function createTripFiltersTemplate(filterItems) {
 }
 
 export default class TripFiltersView extends AbstractView {
-  #filters;
+  #filters = null;
 
   constructor({ filters }) {
     super();

@@ -4,12 +4,14 @@ import NoPointView from '../view/no-point-view';
 import PointSort from '../view/point-sort-view';
 import PointPresenter from './point-presenter';
 import { updateItem } from '../utils/common';
+import { SortType } from '../const';
+import { sortPointsByDay, sortPointsByPrice, sortPointsByTime } from '../utils/sort';
 
 export default class BoardPresenter {
   // создали список ul в который элементами списка будем добавлять li (контент);
   #containerForPoints = new ContainerForPointsView();
   #noPointComponent = new NoPointView();
-  #pointSort = new PointSort();
+  #pointSort = null;
 
   #points = [];
 
@@ -19,6 +21,8 @@ export default class BoardPresenter {
   #listOffers = null;
 
   #pointPresenters = new Map();
+  #currentSortType = SortType.DAY;
+  #sourcedPoints = [];
 
   // передали в конструктор аргумент для того, что бы можно
   // было в мейне добавить елумент (куда будет отрисовываться), для того что бы класс
@@ -34,17 +38,9 @@ export default class BoardPresenter {
   }
 
   init() {
-    // создаем новое свойство listPoints и в него сохраняем все, что нам вернет
-    // getPoint() с помощью спред оператора.
-    //
-    // сделано это для упращения на момент обучения, что бы все находилось в одном месте,
-    // в презентере, далее это будет перенесено в модель.
-    //
-    //по факту это нарушение правил MVP
     this.#listPoints = [...this.#pointsModel.point];
-    //та же логика, но для списка оферов. Мы из модели получили данные и обработали их в презентере
     this.#listOffers = [...this.#pointsModel.listOffers];
-
+    this.#sourcedPoints = [...this.#pointsModel.point];
     this.#renderPointsList();
   }
 
@@ -66,7 +62,7 @@ export default class BoardPresenter {
 
   #renderPointsList() {
     // если нет точек, то вставляем заглушку
-    if(!this.#listPoints.length) {
+    if (!this.#listPoints.length) {
       this.#renderNoPoints();
       return;
     }
@@ -85,7 +81,37 @@ export default class BoardPresenter {
 
   #handlePointChange = (updatePoint) => {
     this.#points = updateItem(this.#points, updatePoint);
+    this.#sourcedPoints = updateItem(this.#sourcedPoints, updatePoint);
     this.#pointPresenters.get(updatePoint.id).init(updatePoint);
+  };
+
+  #sortPoints(sortType) {
+    switch (sortType) {
+      case SortType.DAY:
+        this.#listPoints.sort(sortPointsByDay);
+        break;
+      case SortType.TIME:
+        this.#listPoints.sort(sortPointsByTime);
+        break;
+      case SortType.PRICE:
+        this.#listPoints.sort(sortPointsByPrice);
+        break;
+      default:
+        this.#points = [...this.#sourcedPoints];
+    }
+
+    this.#currentSortType = sortType;
+    // this.#renderPointSort();
+  }
+
+  #handleSortTypeChange = (sortType) => {
+    if (this.#currentSortType === sortType) {
+      return;
+    }
+
+    this.#sortPoints(sortType);
+    this.#clearPointList();
+    this.#renderPointsList();
   };
 
   #renderNoPoints() {
@@ -93,6 +119,11 @@ export default class BoardPresenter {
   }
 
   #renderPointSort() {
+    this.#pointSort = new PointSort({
+      onSortTypeChange: this.#handleSortTypeChange,
+      sortType: this.#currentSortType,
+    });
+
     render(this.#pointSort, this.#pointContainer);
   }
 }
