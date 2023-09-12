@@ -1,4 +1,4 @@
-import AbstractView from '../framework/view/abstract-view';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 import { filterDateForEditorCreator } from '../utils/time';
 
 const BLANK_DATA_TRIP = {
@@ -28,7 +28,8 @@ function createPhotosPointTemplate(photos) {
     </div>`);
 }
 
-function createEditingCreationPoint(point, listOffers) {
+function createEditingCreationPoint({ state, point, listOffers }) {
+  const { pointDest } = state;
   const { id, basePrice, description, destination, offersCheck, photos, timeStart, timeEnd, typePoint } = point;
 
   const startDate = filterDateForEditorCreator(timeStart);
@@ -154,15 +155,15 @@ function createEditingCreationPoint(point, listOffers) {
             <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
             <div class="event__available-offers">
-              ${ createListOffersForPointTemplate }
+              ${createListOffersForPointTemplate}
             </div>
           </section>
 
           <section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-            ${ createDescriptionPointTemplate(description) }
+            ${createDescriptionPointTemplate(description)}
 
-            ${ createPhotosPointTemplate(photos) }
+            ${createPhotosPointTemplate(photos)}
 
           </section>
         </section>
@@ -171,7 +172,7 @@ function createEditingCreationPoint(point, listOffers) {
   `;
 }
 
-export default class EditingCreationPointView extends AbstractView {
+export default class EditingCreationPointView extends AbstractStatefulView {
   #point;
   #listOffers;
   #handleClick;
@@ -183,12 +184,14 @@ export default class EditingCreationPointView extends AbstractView {
     this.#listOffers = listOffers;
     this.#handleClick = onClick;
     this.#handleFormSubmit = onFormSubmit;
-    this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#clickHandler);
+
+    this._setState(EditingCreationPointView.parsePointToState({ point }));
+
+    this._restoreHandlers();
   }
 
   get template() {
-    return createEditingCreationPoint(this.#point, this.#listOffers);
+    return createEditingCreationPoint({ state: this._state, point: this.#point, listOffers: this.#listOffers });
   }
 
   #clickHandler = (evt) => {
@@ -200,4 +203,83 @@ export default class EditingCreationPointView extends AbstractView {
     evt.preventDefault();
     this.#handleFormSubmit(this.#point);
   };
+
+  #typeChangeHandler = (evt) => {
+    this.updateElement({
+      point: {
+        ...this._state.point,
+        type: evt.target.value,
+        offers: []
+      }
+    });
+  };
+
+  #destinationChangeHandler = (evt) => {
+    const selectedDestination = this.#point
+      .find((point) => point.destination === evt.target.value);
+
+    const selectedDestinationId = (selectedDestination) ? selectedDestination.id : null;
+
+    this.updateElement({
+      point: {
+        ...this._state.point,
+        destination: selectedDestinationId
+      }
+    });
+  };
+
+  #offerChangeHandler = () => {
+    const checkedBoxes = Array.from(this.element.querySelector('.event__offer-checkbox:checked'));
+
+    this._setState({
+      point: {
+        ...this._state.point,
+        offers: checkedBoxes.map((element) => element.dataset.offerId)
+      }
+    });
+  };
+
+  #priceChangeHandler = (evt) => {
+    this._setState({
+      point: {
+        ...this._state.point,
+        basePrice: evt.target.valueAsNumber
+      }
+    });
+  };
+
+  _restoreHandlers = () => {
+    this.element
+      .querySelector('form')
+      .addEventListener('submit', this.#formSubmitHandler);
+
+    this.element
+      .querySelector('.event__rollup-btn')
+      .addEventListener('click', this.#clickHandler);
+
+    this.element
+      .querySelector('.event__type-group')
+      .addEventListener('change', this.#typeChangeHandler);
+
+    this.element
+      .querySelector('.event__input--destination')
+      .addEventListener('change', this.#destinationChangeHandler);
+
+    this.element
+      .querySelector('.event__available-offers')
+      .addEventListener('change', this.#offerChangeHandler);
+
+    this.element
+      .querySelector('.event__input--price')
+      .addEventListener('change', this.#priceChangeHandler);
+
+    // this.#setDatePickers();
+
+  };
+
+  // point не единственное свой-во нашего состояние, будут еще в дальнейшем
+  // нет обращения к this, поэтому метод статичный
+  static parsePointToState = ({ point }) => ({ point });
+
+  static parseStateToPoint = (state) => state.point;
 }

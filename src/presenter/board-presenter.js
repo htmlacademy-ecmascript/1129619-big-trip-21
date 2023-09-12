@@ -1,4 +1,4 @@
-import { render } from '../framework/render';
+import { remove, render, replace } from '../framework/render';
 import ContainerForPointsView from '../view/container-points-view';
 import NoPointView from '../view/no-point-view';
 import PointSort from '../view/point-sort-view';
@@ -101,14 +101,15 @@ export default class BoardPresenter {
     }
 
     this.#currentSortType = sortType;
+
     // this.#renderPointSort();
+
   }
 
   #handleSortTypeChange = (sortType) => {
     if (this.#currentSortType === sortType) {
       return;
     }
-
     this.#sortPoints(sortType);
     this.#clearPointList();
     this.#renderPointsList();
@@ -119,10 +120,17 @@ export default class BoardPresenter {
   }
 
   #renderPointSort() {
+    const prevSortComponent = this.#pointSort;
+
     this.#pointSort = new PointSort({
       onSortTypeChange: this.#handleSortTypeChange,
       sortType: this.#currentSortType,
     });
+
+    if(prevSortComponent) {
+      replace(this.#pointSort, prevSortComponent);
+      remove(prevSortComponent);
+    }
 
     render(this.#pointSort, this.#pointContainer);
   }
