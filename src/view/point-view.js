@@ -8,9 +8,6 @@ import {
 
 function createPoint(point, listOffers, listDestination) {
   const { basePrice, destination, isFavorite, offersCheck, timeStart, timeEnd, typePoint } = point;
-  // console.log(listDestination);
-
-  // console.log(destination);
 
   const destinationPointObj = listDestination.find((item) => item.id === destination);
   const { name } = destinationPointObj;
