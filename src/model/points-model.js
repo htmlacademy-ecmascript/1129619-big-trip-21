@@ -1,10 +1,12 @@
 export default class PointsModel {
   #points;
   #listOffers;
+  #listDestination;
 
-  constructor (points, listOffers) {
+  constructor (points, listOffers, listDestination) {
     this.#points = points;
     this.#listOffers = listOffers;
+    this.#listDestination = listDestination;
   }
 
   get point() {
@@ -13,5 +15,9 @@ export default class PointsModel {
 
   get listOffers() {
     return this.#listOffers;
+  }
+
+  get listDestination() {
+    return this.#listDestination;
   }
 }

@@ -28,12 +28,15 @@ function createPhotosPointTemplate(photos) {
     </div>`);
 }
 
-function createEditingCreationPoint({ state, point, listOffers }) {
+function createEditingCreationPoint({ state, point, listOffers, listDestination }) {
   const { pointDest } = state;
   const { id, basePrice, description, destination, offersCheck, photos, timeStart, timeEnd, typePoint } = point;
 
   const startDate = filterDateForEditorCreator(timeStart);
   const endDate = filterDateForEditorCreator(timeEnd);
+
+  const destinationPointObj = listDestination.find((item) => item.id === destination);
+  const { name } = destinationPointObj;
 
   const typeOffersObj = listOffers.find((item) => item.type === typePoint);
   const { offers } = typeOffersObj;
@@ -120,7 +123,7 @@ function createEditingCreationPoint({ state, point, listOffers }) {
             <label class="event__label  event__type-output" for="event-destination-1">
               ${typePoint}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" list="destination-list-1">
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${name}" list="destination-list-1">
             <datalist id="destination-list-1">
               <option value="Amsterdam"></option>
               <option value="Geneva"></option>
@@ -175,13 +178,15 @@ function createEditingCreationPoint({ state, point, listOffers }) {
 export default class EditingCreationPointView extends AbstractStatefulView {
   #point;
   #listOffers;
+  #listDestination;
   #handleClick;
   #handleFormSubmit;
 
-  constructor({ point = BLANK_DATA_TRIP, listOffers, onClick, onFormSubmit }) {
+  constructor({ point = BLANK_DATA_TRIP, listOffers, listDestination, onClick, onFormSubmit }) {
     super();
     this.#point = point;
     this.#listOffers = listOffers;
+    this.#listDestination = listDestination;
     this.#handleClick = onClick;
     this.#handleFormSubmit = onFormSubmit;
 
@@ -191,7 +196,7 @@ export default class EditingCreationPointView extends AbstractStatefulView {
   }
 
   get template() {
-    return createEditingCreationPoint({ state: this._state, point: this.#point, listOffers: this.#listOffers });
+    return createEditingCreationPoint({ state: this._state, point: this.#point, listOffers: this.#listOffers, listDestination: this.#listDestination });
   }
 
   #clickHandler = (evt) => {
@@ -201,15 +206,15 @@ export default class EditingCreationPointView extends AbstractStatefulView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#handleFormSubmit(this.#point);
+    this.#handleFormSubmit(EditingCreationPointView.parseStateToPoint(this._state));
   };
 
   #typeChangeHandler = (evt) => {
     this.updateElement({
       point: {
         ...this._state.point,
-        type: evt.target.value,
-        offers: []
+        typePoint: evt.target.value,
+        // offers: []
       }
     });
   };
@@ -243,7 +248,7 @@ export default class EditingCreationPointView extends AbstractStatefulView {
     this._setState({
       point: {
         ...this._state.point,
-        basePrice: evt.target.valueAsNumber
+        basePrice: evt.target.value
       }
     });
   };
@@ -282,4 +287,10 @@ export default class EditingCreationPointView extends AbstractStatefulView {
   static parsePointToState = ({ point }) => ({ point });
 
   static parseStateToPoint = (state) => state.point;
+
+  reset(point) {
+    this.updateElement(
+      EditingCreationPointView.parsePointToState(point)
+    );
+  }
 }

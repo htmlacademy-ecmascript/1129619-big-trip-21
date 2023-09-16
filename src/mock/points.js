@@ -1,7 +1,69 @@
 import { POINTS_TYPE } from './const';
 import { getRandomArrayElement, getRandomPhotos, getRandomDescription, getRandomArbitrary } from './utils';
-import { POINTS_COUNT, CITIES, Time, PRICE } from './const';
+import { POINTS_COUNT, Time, PRICE } from './const';
 import { nanoid } from 'nanoid';
+
+const mockDestinations = [
+  {
+    id: 0,
+    description: 'Столица России, город федерального значения, административный центр Центрального федерального округа и центр Московской области',
+    name: 'Moscow',
+    pictures: [
+      {
+        src: `https://loremflickr.com/248/152?random=${getRandomArbitrary(1, 10)}`,
+        description: 'Moscow  Moscow '
+      },
+      {
+        src: `https://loremflickr.com/248/152?random=${getRandomArbitrary(1, 10)}`,
+        description: 'Moscow  Moscow '
+      }
+    ]
+  },
+  {
+    id: 1,
+    description: 'Saint Petersburg, formerly known as Petrograd (1914–1924) and later Leningrad (1924–1991; see below), is the second-largest city in Russia after Moscow.',
+    name: 'Saint Petersburg',
+    pictures: [
+      {
+        src: `https://loremflickr.com/248/152?random=${getRandomArbitrary(1, 10)}`,
+        description: 'Saint Petersburg Saint Petersburg'
+      },
+      {
+        src: `https://loremflickr.com/248/152?random=${getRandomArbitrary(1, 10)}`,
+        description: 'Saint Petersburg1 Saint Petersburg1'
+      },
+      {
+        src: `https://loremflickr.com/248/152?random=${getRandomArbitrary(1, 10)}`,
+        description: 'Saint Petersburg2 Saint Petersburg2'
+      },
+      {
+        src: `https://loremflickr.com/248/152?random=${getRandomArbitrary(1, 10)}`,
+        description: 'Saint Petersburg3 Saint Petersburg3'
+      }
+    ]
+  },
+  {
+    id: 2,
+    description: 'Is the largest city and administrative centre of Novosibirsk Oblast and the Siberian Federal District in Russia.',
+    name: 'Novosibirsk',
+    pictures: []
+  },
+  {
+    id: 3,
+    description: 'Is a city and the administrative centre of Sverdlovsk Oblast and the Ural Federal District, Russia.',
+    name: 'Yekaterinburg ',
+    pictures: [
+      {
+        src: `https://loremflickr.com/248/152?random=${getRandomArbitrary(1, 10)}`,
+        description: 'Yekaterinburg  Yekaterinburg '
+      },
+      {
+        src: `https://loremflickr.com/248/152?random=${getRandomArbitrary(1, 10)}`,
+        description: 'Yekaterinburg  Yekaterinburg '
+      }
+    ]
+  }
+];
 
 const mockOffers = [
   {
@@ -107,7 +169,7 @@ function getRandomPoint() {
     id: nanoid(),
     basePrice: getRandomArrayElement(PRICE),
     typePoint,
-    destination: getRandomArrayElement(CITIES),
+    destination: getRandomArbitrary(0, 3),
     timeStart: getRandomArrayElement(Time.START),
     timeEnd: getRandomArrayElement(Time.END),
     offersCheck: getCheckedOffers(typePoint),
@@ -135,5 +197,9 @@ function getListOffers () {
   return mockOffers;
 }
 
-export { getRandomPoint, getListOffers, getRandomPoints };
+function getDestinations() {
+  return mockDestinations;
+}
+
+export { getRandomPoint, getListOffers, getRandomPoints, getDestinations };
 

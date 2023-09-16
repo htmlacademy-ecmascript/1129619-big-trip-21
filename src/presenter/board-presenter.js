@@ -19,6 +19,7 @@ export default class BoardPresenter {
   #pointsModel = null;
   #listPoints = null;
   #listOffers = null;
+  #listDestination = [];
 
   #pointPresenters = new Map();
   #currentSortType = SortType.DAY;
@@ -40,6 +41,7 @@ export default class BoardPresenter {
   init() {
     this.#listPoints = [...this.#pointsModel.point];
     this.#listOffers = [...this.#pointsModel.listOffers];
+    this.#listDestination = [...this.#pointsModel.listDestination];
     this.#sourcedPoints = [...this.#pointsModel.point];
     this.#renderPointsList();
   }
@@ -48,6 +50,7 @@ export default class BoardPresenter {
     const pointPresenter = new PointPresenter({
       containerForPoints: this.#containerForPoints.element,
       listOffers: this.#listOffers,
+      listDestination: this.#listDestination,
       onDataChange: this.#handlePointChange,
       onModeChange: this.#handleModeChange,
     });

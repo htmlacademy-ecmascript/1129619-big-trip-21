@@ -19,10 +19,13 @@ export default class PointPresenter {
   #listOffers = null;
   #mode = Mode.DEFAULT;
 
+  #listDestination = [];
 
-  constructor({ containerForPoints, listOffers, onDataChange, onModeChange }) {
+
+  constructor({ containerForPoints, listOffers, listDestination, onDataChange, onModeChange }) {
     this.#containerForPoints = containerForPoints;
     this.#listOffers = listOffers;
+    this.#listDestination = listDestination;
     this.#handleDataChange = onDataChange;
     this.#handleModeChange = onModeChange;
   }
@@ -36,6 +39,7 @@ export default class PointPresenter {
     this.#pointComponent = new PointView({
       point: this.#point,
       listOffers: this.#listOffers,
+      listDestination: this.#listDestination,
       onClick: this.#handlePointClick,
       onFavoriteClick: this.#handleFavoriteClick,
     });
@@ -43,6 +47,7 @@ export default class PointPresenter {
     this.#pointEditComponent = new EditingCreationPointView({
       point: this.#point,
       listOffers: this.#listOffers,
+      listDestination: this.#listDestination,
       onClick: this.#handleEditClick,
       // отправка формы на сервер, заменяет форму на точку
       onFormSubmit: this.#handlePointSubmit,
@@ -74,6 +79,7 @@ export default class PointPresenter {
 
   resetView() {
     if (this.#mode !== Mode.DEFAULT) {
+      this.#pointEditComponent.reset(this.#point);
       this.#replaceEditFormToCardPoint();
     }
   }
@@ -94,6 +100,7 @@ export default class PointPresenter {
   #escKeyDownHandler = (evt) => {
     if (evt.key === 'Escape') {
       evt.preventDefault();
+      this.#pointEditComponent.reset(this.#point);
       this.#replaceEditFormToCardPoint();
     }
   };
@@ -107,7 +114,7 @@ export default class PointPresenter {
   };
 
   #handleFavoriteClick = () => {
-    this.#handleDataChange({...this.#point, isFavorite: !this.#point.isFavorite});
+    this.#handleDataChange({ ...this.#point, isFavorite: !this.#point.isFavorite });
   };
 
   #handlePointSubmit = (point) => {
