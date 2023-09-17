@@ -1,4 +1,4 @@
-import { render } from '../framework/render';
+import { remove, render, replace } from '../framework/render';
 import ContainerForPointsView from '../view/container-points-view';
 import NoPointView from '../view/no-point-view';
 import PointSort from '../view/point-sort-view';
@@ -19,6 +19,7 @@ export default class BoardPresenter {
   #pointsModel = null;
   #listPoints = null;
   #listOffers = null;
+  #listDestination = [];
 
   #pointPresenters = new Map();
   #currentSortType = SortType.DAY;
@@ -40,6 +41,7 @@ export default class BoardPresenter {
   init() {
     this.#listPoints = [...this.#pointsModel.point];
     this.#listOffers = [...this.#pointsModel.listOffers];
+    this.#listDestination = [...this.#pointsModel.listDestination];
     this.#sourcedPoints = [...this.#pointsModel.point];
     this.#renderPointsList();
   }
@@ -48,6 +50,7 @@ export default class BoardPresenter {
     const pointPresenter = new PointPresenter({
       containerForPoints: this.#containerForPoints.element,
       listOffers: this.#listOffers,
+      listDestination: this.#listDestination,
       onDataChange: this.#handlePointChange,
       onModeChange: this.#handleModeChange,
     });
@@ -101,14 +104,15 @@ export default class BoardPresenter {
     }
 
     this.#currentSortType = sortType;
+
     // this.#renderPointSort();
+
   }
 
   #handleSortTypeChange = (sortType) => {
     if (this.#currentSortType === sortType) {
       return;
     }
-
     this.#sortPoints(sortType);
     this.#clearPointList();
     this.#renderPointsList();
@@ -119,10 +123,17 @@ export default class BoardPresenter {
   }
 
   #renderPointSort() {
+    const prevSortComponent = this.#pointSort;
+
     this.#pointSort = new PointSort({
       onSortTypeChange: this.#handleSortTypeChange,
       sortType: this.#currentSortType,
     });
+
+    if(prevSortComponent) {
+      replace(this.#pointSort, prevSortComponent);
+      remove(prevSortComponent);
+    }
 
     render(this.#pointSort, this.#pointContainer);
   }

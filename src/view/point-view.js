@@ -6,8 +6,11 @@ import {
   filterPointDay,
 } from '../utils/time';
 
-function createPoint(point, listOffers) {
+function createPoint(point, listOffers, listDestination) {
   const { basePrice, destination, isFavorite, offersCheck, timeStart, timeEnd, typePoint } = point;
+
+  const destinationPointObj = listDestination.find((item) => item.id === destination);
+  const { name } = destinationPointObj;
 
   const day = filterDayMonth(timeStart);
   const hoursStart = filterHoursPoints(timeStart);
@@ -38,7 +41,7 @@ function createPoint(point, listOffers) {
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/${typePoint}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${typePoint} ${destination}</h3>
+        <h3 class="event__title">${typePoint} ${name}</h3>
         <div class="event__schedule">
           <p class="event__time">
             <time class="event__start-time" datetime="${timeStart}">${hoursStart}</time>
@@ -76,11 +79,13 @@ export default class PointView extends AbstractView {
   #listOffers = null;
   #handleClick = null;
   #handleFavoriteClick = null;
+  #listDestination = null;
 
-  constructor({ point, listOffers, onClick, onFavoriteClick }) {
+  constructor({ point, listOffers, listDestination, onClick, onFavoriteClick }) {
     super();
     this.#point = point;
     this.#listOffers = listOffers;
+    this.#listDestination = listDestination;
     this.#handleClick = onClick;
     this.#handleFavoriteClick = onFavoriteClick;
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#clickHandler);
@@ -88,7 +93,7 @@ export default class PointView extends AbstractView {
   }
 
   get template() {
-    return createPoint(this.#point, this.#listOffers);
+    return createPoint(this.#point, this.#listOffers, this.#listDestination);
   }
 
   #favoriteClickHandler = (evt) => {

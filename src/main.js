@@ -4,7 +4,7 @@ import TripFilters from './view/trip-filters-view';
 // import PointSort from './view/point-sort-view';
 import BoardPresenter from './presenter/board-presenter';
 import PointsModel from './model/points-model';
-import { getRandomPoints, getListOffers } from './mock/points';
+import { getRandomPoints, getListOffers, getDestinations } from './mock/points';
 import { generateFilter } from './mock/filter';
 
 const siteHeaderElement = document.querySelector('.page-header');
@@ -14,7 +14,7 @@ const siteTripFiltersElement = siteHeaderElement.querySelector('.trip-controls__
 const tripEventsElement = siteMainElement.querySelector('.trip-events');
 
 // мы создали модель обьект с ключом points и значением массива обьектов с точками
-const pointsModel = new PointsModel(getRandomPoints(), getListOffers());
+const pointsModel = new PointsModel(getRandomPoints(), getListOffers(), getDestinations());
 
 // аргументом мы передаем кусок разметки,
 // где у нас будет распологаться содержимое презентера

@@ -1,5 +1,4 @@
 const DESCRIPTION = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.';
-const PHOTO_URLS = 'https://loremflickr.com/248/152?random=';
 const POINTS_COUNT = 10;
 const CITIES = ['Istanbul', 'Moscow', 'California', 'Kazan', 'Vladivostok', 'Usuriysk', 'Tihvan'];
 const POINTS_TYPE = ['taxi', 'ship', 'flight'];
@@ -10,4 +9,4 @@ const Time = {
 
 const PRICE = [10000, 100, 20, 15, 12345, 520, 9999, 321, 500, 1212, 1010, 2015, 3050];
 
-export { DESCRIPTION, PHOTO_URLS, POINTS_COUNT, CITIES, Time, PRICE, POINTS_TYPE };
+export { DESCRIPTION, POINTS_COUNT, CITIES, Time, PRICE, POINTS_TYPE };
