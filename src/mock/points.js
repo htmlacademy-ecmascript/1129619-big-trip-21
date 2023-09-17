@@ -1,5 +1,5 @@
 import { POINTS_TYPE } from './const';
-import { getRandomArrayElement, getRandomDescription, getRandomArbitrary } from './utils';
+import { getRandomArrayElement, getRandomArbitrary } from './utils';
 import { POINTS_COUNT, Time, PRICE } from './const';
 import { nanoid } from 'nanoid';
 
@@ -173,7 +173,6 @@ function getRandomPoint() {
     timeStart: getRandomArrayElement(Time.START),
     timeEnd: getRandomArrayElement(Time.END),
     offersCheck: getCheckedOffers(typePoint),
-    description: getRandomDescription(),
     isFavorite: Boolean(getRandomArbitrary(0, 1)),
   };
 }
