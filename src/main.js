@@ -20,7 +20,7 @@ const pointsModel = new PointsModel(getRandomPoints(), getListOffers(), getDesti
 // где у нас будет распологаться содержимое презентера
 const boardPresenter = new BoardPresenter({ pointContainer: tripEventsElement, pointsModel });
 
-const filters = generateFilter(pointsModel.point);
+const filters = generateFilter(pointsModel.points);
 
 render(new TripInfo(), siteTripMainElement, RenderPosition.AFTERBEGIN);
 render(new TripFilters({ filters }), siteTripFiltersElement);

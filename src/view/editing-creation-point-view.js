@@ -45,9 +45,9 @@ function createEditingCreationPoint({ state, listOffers, listDestination }) {
 
   const createListOffersForPointTemplate = offers.map(({ idOffer, title, price }) => `
     <div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${idOffer}" type="checkbox" name="event-offer-luggage"
+      <input class="event__offer-checkbox  visually-hidden" data-id="${idOffer}" id="event-offer-luggage-${idOffer}" type="checkbox" name="event-offer-luggage"
       ${offersCheck.map((idOfferCheck) => {
-    if (idOfferCheck === idOffer) {
+    if (+idOfferCheck === idOffer) {
       return 'checked';
     }
   }).join('')} >
@@ -220,12 +220,12 @@ export default class EditingCreationPointView extends AbstractStatefulView {
   };
 
   #offerChangeHandler = () => {
-    const checkedBoxes = Array.from(this.element.querySelector('.event__offer-checkbox:checked'));
+    const checkedBoxes = Array.from(this.element.querySelectorAll('.event__offer-checkbox:checked'));
 
     this._setState({
       point: {
         ...this._state.point,
-        offers: checkedBoxes.map((element) => element.dataset.offerId)
+        offersCheck: checkedBoxes.map((element) => element.dataset.id)
       }
     });
   };

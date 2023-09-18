@@ -1,6 +1,7 @@
 import { render, replace, remove } from '../framework/render';
 import EditingCreationPointView from '../view/editing-creation-point-view';
 import PointView from '../view/point-view';
+import { UserAction, UpdateType } from '../const';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -114,11 +115,17 @@ export default class PointPresenter {
   };
 
   #handleFavoriteClick = () => {
-    this.#handleDataChange({ ...this.#point, isFavorite: !this.#point.isFavorite });
+    this.#handleDataChange(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
+      { ...this.#point, isFavorite: !this.#point.isFavorite });
   };
 
   #handlePointSubmit = (point) => {
-    this.#handleDataChange(point);
+    this.#handleDataChange(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
+      point);
     this.#replaceEditFormToCardPoint();
   };
 }

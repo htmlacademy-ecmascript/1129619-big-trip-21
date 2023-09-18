@@ -1,4 +1,4 @@
-import AbstractView from '../framework/view/abstract-view';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 import {
   getTimeInterval,
   filterHoursPoints,
@@ -74,7 +74,7 @@ function createPoint(point, listOffers, listDestination) {
   `;
 }
 
-export default class PointView extends AbstractView {
+export default class PointView extends AbstractStatefulView {
   #point = null;
   #listOffers = null;
   #handleClick = null;
