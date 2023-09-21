@@ -54,10 +54,10 @@ function createPoint(point, listOffers, listDestination) {
           &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
         </p>
         <h4 class="visually-hidden">Offers:</h4>
-        <ul class="event__selected-offers">
+        <ul class="event__selected-listOffers">
 
 
-        ${ createTypeOffersTemplate(offers) }
+        ${ createTypeOffersTemplate(listOffers) }
 
         </ul>
         <button class="event__favorite-btn ${favoriteClassPoint}" type="button">

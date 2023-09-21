@@ -1,9 +1,8 @@
 import Observable from '../framework/observable';
-import { getRandomPoints } from '../mock/points';
 
 
 export default class PointsModel extends Observable {
-  #points = getRandomPoints;
+  #points;
   #listOffers;
   #listDestination;
 

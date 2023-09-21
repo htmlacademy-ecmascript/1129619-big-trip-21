@@ -1,11 +1,11 @@
 import { render, RenderPosition } from './framework/render';
-import TripInfo from './view/trip-info-view';
-import TripFilters from './view/trip-filters-view';
-// import PointSort from './view/point-sort-view';
-import BoardPresenter from './presenter/board-presenter';
-import PointsModel from './model/points-model';
 import { getRandomPoints, getListOffers, getDestinations } from './mock/points';
-import { generateFilter } from './mock/filter';
+import TripInfo from './view/trip-info-view';
+import BoardPresenter from './presenter/points-list-presenter';
+import PointsModel from './model/points-model';
+import FilterModel from './model/filter-model';
+import FilterPresenter from './presenter/filter-presenter';
+import NewPointButtonView from './view/new-point-button';
 
 const siteHeaderElement = document.querySelector('.page-header');
 const siteMainElement = document.querySelector('.page-main');
@@ -15,15 +15,38 @@ const tripEventsElement = siteMainElement.querySelector('.trip-events');
 
 // мы создали модель обьект с ключом points и значением массива обьектов с точками
 const pointsModel = new PointsModel(getRandomPoints(), getListOffers(), getDestinations());
-
+const filterModel = new FilterModel();
 // аргументом мы передаем кусок разметки,
 // где у нас будет распологаться содержимое презентера
-const boardPresenter = new BoardPresenter({ pointContainer: tripEventsElement, pointsModel });
+const pointListPresenter = new BoardPresenter({
+  pointContainer: tripEventsElement,
+  pointsModel,
+  filterModel,
+  oneNewTaskDestroy: handleNewTaskFormClose,
+});
 
-const filters = generateFilter(pointsModel.points);
+const newPointButtonView = new NewPointButtonView({
+  onClick: handleNewPointButtonClick
+});
+
+function handleNewTaskFormClose() {
+  newPointButtonView.element.disabled = false;
+}
+
+function handleNewPointButtonClick() {
+  pointListPresenter.createPoint();
+  newPointButtonView.element.disabled = true;
+}
 
 render(new TripInfo(), siteTripMainElement, RenderPosition.AFTERBEGIN);
-render(new TripFilters({ filters }), siteTripFiltersElement);
-// render(new PointSort(), tripEventsElement);
 
-boardPresenter.init();
+render(newPointButtonView, siteTripMainElement);
+
+const filterPresenter = new FilterPresenter({
+  filterContainer: siteTripFiltersElement,
+  filterModel,
+  pointsModel
+});
+
+filterPresenter.init();
+pointListPresenter.init();

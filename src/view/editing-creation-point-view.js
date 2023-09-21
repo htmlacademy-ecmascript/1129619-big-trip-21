@@ -17,8 +17,8 @@ const BLANK_DATA_TRIP = {
   isFavorite: false,
 };
 
-function createEditingCreationPoint({ state, listOffers, listDestination }) {
-  const { id, basePrice, destination, offersCheck, timeStart, timeEnd, typePoint } = state.point;
+function editingCreationPoint({ point, listOffers, listDestination, isNewPoint }) {
+  const { id, basePrice, destination, offersCheck, timeStart, timeEnd, typePoint } = point;
 
   const startDate = filterDateForEditorCreator(timeStart);
   const endDate = filterDateForEditorCreator(timeEnd);
@@ -61,7 +61,8 @@ function createEditingCreationPoint({ state, listOffers, listDestination }) {
   function createEventTypeListItemsTemplate() {
     return listOffers.map((offer) =>
       `<div class="event__type-item">
-        <input id="event-type-${offer.type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${offer.type}">
+        <input id="event-type-${offer.type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${offer.type}"
+        >
         <label class="event__type-label  event__type-label--${offer.type}" for="event-type-${offer.type}-1">${offer.type}</label>
       </div>`
     ).join('');
@@ -96,7 +97,7 @@ function createEditingCreationPoint({ state, listOffers, listDestination }) {
             <label class="event__label  event__type-output" for="event-destination-1">
               ${typePoint}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${name}" list="destination-list-1">
+            <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${name}" list="destination-list-1">
             <datalist id="destination-list-1">
             ${createDestinationListItemsTemplate()}
             </datalist>
@@ -119,8 +120,9 @@ function createEditingCreationPoint({ state, listOffers, listDestination }) {
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">Cancel</button>
-          <button class="event__rollup-btn" type="button">
+          <button class="event__reset-btn" type="reset">${isNewPoint ? 'Cancel' : 'Delete'}</button>
+                  ${isNewPoint ? '' : '<button class="event__rollup-btn" type="button"><span class="visually-hidden">Open event</span></button>'}
+
           <span class="visually-hidden">Open event</span>
           </button>
         </header>
@@ -154,14 +156,18 @@ export default class EditingCreationPointView extends AbstractStatefulView {
   #handleFormSubmit;
   #datepickerFrom = null;
   #datepickerTo = null;
+  #handleDeleteClick = null;
+  #isNewPoint = null;
 
-  constructor({ point = BLANK_DATA_TRIP, listOffers, listDestination, onClick, onFormSubmit }) {
+  constructor({ point = BLANK_DATA_TRIP, listOffers, listDestination, isNewPoint, onClick, onFormSubmit, onDeleteClick }) {
     super();
     this.#point = point;
     this.#listOffers = listOffers;
     this.#listDestination = listDestination;
     this.#handleClick = onClick;
     this.#handleFormSubmit = onFormSubmit;
+    this.#handleDeleteClick = onDeleteClick;
+    this.#isNewPoint = isNewPoint;
 
     this._setState(EditingCreationPointView.parsePointToState({ point }));
 
@@ -169,7 +175,7 @@ export default class EditingCreationPointView extends AbstractStatefulView {
   }
 
   get template() {
-    return createEditingCreationPoint({ state: this._state, point: this.#point, listOffers: this.#listOffers, listDestination: this.#listDestination });
+    return editingCreationPoint({ state: this._state, point: this.#point, listOffers: this.#listOffers, listDestination: this.#listDestination, isNewPoint: this.#isNewPoint });
   }
 
   #clickHandler = (evt) => {
@@ -239,6 +245,11 @@ export default class EditingCreationPointView extends AbstractStatefulView {
     });
   };
 
+  #deleteClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleDeleteClick(EditingCreationPointView.parseStateToPoint(this._state));
+  };
+
   #setDatepicker() {
     this.#datepickerFrom = flatpickr(
       this.element.querySelector('[name=event-start-time]'),
@@ -268,9 +279,12 @@ export default class EditingCreationPointView extends AbstractStatefulView {
       .querySelector('form')
       .addEventListener('submit', this.#formSubmitHandler);
 
-    this.element
-      .querySelector('.event__rollup-btn')
-      .addEventListener('click', this.#clickHandler);
+
+    if (!this.#isNewPoint) {
+      this.element
+        .querySelector('.event__rollup-btn')
+        .addEventListener('click', this.#clickHandler);
+    }
 
     this.element
       .querySelector('.event__type-group')
@@ -287,6 +301,15 @@ export default class EditingCreationPointView extends AbstractStatefulView {
     this.element
       .querySelector('.event__input--price')
       .addEventListener('change', this.#priceChangeHandler);
+
+    this.element
+      .querySelector('.event__reset-btn')
+      .addEventListener('click', this.#deleteClickHandler);
+
+    this.element
+      .querySelector('.event__input--price')
+      .addEventListener('change', this.#priceChangeHandler);
+
 
     this.#setDatepicker();
 

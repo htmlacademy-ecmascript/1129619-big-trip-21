@@ -1,16 +1,19 @@
-import { remove, render, replace } from '../framework/render';
+import { remove, render, RenderPosition } from '../framework/render';
+import { filter } from '../utils/filter';
+import { SortType, UpdateType, UserAction, FilterType } from '../const';
+import { sortPointsByDay, sortPointsByPrice, sortPointsByTime } from '../utils/sort';
 import ContainerForPointsView from '../view/container-points-view';
 import NoPointView from '../view/no-point-view';
-import PointSort from '../view/point-sort-view';
+import PointSort from '../view/sort-view';
 import PointPresenter from './point-presenter';
-import { SortType, UpdateType, UserAction } from '../const';
-import { sortPointsByDay, sortPointsByPrice, sortPointsByTime } from '../utils/sort';
+import NewPointPresenter from './new-point-presenter';
 
 export default class BoardPresenter {
   // создали список ul в который элементами списка будем добавлять li (контент);
   #containerForPoints = new ContainerForPointsView();
-  #noPointComponent = new NoPointView();
+  #noPointComponent = null;
   #pointSort = null;
+  #filterModel = null;
 
   #pointContainer = null;
   #pointsModel = null;
@@ -19,33 +22,42 @@ export default class BoardPresenter {
 
   #pointPresenters = new Map();
   #currentSortType = SortType.DAY;
+  #filterType = FilterType.EVERYTHING;
+  #newPointPresenter = null;
 
-  // передали в конструктор аргумент для того, что бы можно
-  // было в мейне добавить елумент (куда будет отрисовываться), для того что бы класс
-  // мог что то в себя принимать необходим конструктор
-  // Для того что бы что то ДОБАВЛЯТЬ в наши классы первым делом надо
-  // добавлять это в конструктор, в конструктор мы добавляем что то абстрактное,
-  // а что то конкретное уже передается аргументом в main.js
-  constructor({ pointContainer, pointsModel }) {
+  constructor({ pointContainer, pointsModel, filterModel, onNewTaskDestroy }) {
     this.#pointContainer = pointContainer;
-    // в main мы передали вторым аргументом точки маршрута и тут мы их обрабатываем.
-    // или от противного: тут мы даем возможность presenter обработать наши точки маршрута
     this.#pointsModel = pointsModel;
+    this.#filterModel = filterModel;
+
+    this.#newPointPresenter = new NewPointPresenter({
+      pointListContainer: this.#containerForPoints.element,
+      onDataChange: this.#handleViewAction,
+      onDestroy: onNewTaskDestroy
+    });
 
     this.#pointsModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   get points() {
+    this.#filterType = this.#filterModel.filter;
+    const points = this.#pointsModel.points;
+    const filteredPoints = filter[this.#filterType](points);
+
     switch (this.#currentSortType) {
       case SortType.DAY:
-        return [...this.#pointsModel.points].sort(sortPointsByDay);
+        // console.log([...this.#pointsModel.points].sort(sortPointsByDay));
+        return filteredPoints.sort(sortPointsByDay);
       case SortType.TIME:
-        return [...this.#pointsModel.points].sort(sortPointsByTime);
+        // console.log([...this.#pointsModel.points].sort(sortPointsByTime));
+        return filteredPoints.sort(sortPointsByTime);
       case SortType.PRICE:
-        return [...this.#pointsModel.points].sort(sortPointsByPrice);
+        // console.log([...this.#pointsModel.points].sort(sortPointsByPrice));
+        return filteredPoints.sort(sortPointsByPrice);
     }
 
-    return this.#pointsModel.point;
+    return filteredPoints;
   }
 
 
@@ -65,29 +77,45 @@ export default class BoardPresenter {
     });
     pointPresenter.init(point);
     this.#pointPresenters.set(point.id, pointPresenter);
+    // console.log(this.points);
+    // console.log(this.#pointsModel);
   }
 
-  #clearPointList() {
-    this.#pointPresenters.forEach((presenter) => presenter.destroy());
-    this.#pointPresenters.clear();
+  createPoint() {
+    this.#currentSortType = SortType.DAY;
+    this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this.#newPointPresenter.init(this.destinations, this.offers);
   }
 
   #renderPointsList() {
     // если нет точек, то вставляем заглушку
     if (!this.#pointsModel.points.length) {
       this.#renderNoPoints();
-      return;
+    } else {
+      // первым аргументом добавляем список ul, вторым место куда это будет отрисовываться
+      this.#renderPointSort();
+      render(this.#containerForPoints, this.#pointContainer);
+      for (let i = 0; i < this.#pointsModel.points.length; i++) {
+        this.#renderPoint(this.#pointsModel.points[i]);
+      }
     }
-    this.#renderPointSort();
-    // первым аргументом добавляем список ul, вторым место куда это будет отрисовываться
-    render(this.#containerForPoints, this.#pointContainer);
-    // метод getElement/element возвращает нам компонент (разметку)
-    for (let i = 0; i < this.#pointsModel.points.length; i++) {
-      this.#renderPoint(this.#pointsModel.points[i]);
+  }
+
+  #clearPointList(resetSortType = false) {
+    this.#newPointPresenter.destroy();
+    this.#pointPresenters.forEach((presenter) => presenter.destroy());
+    this.#pointPresenters.clear();
+
+    remove(this.#pointSort);
+    remove(this.#noPointComponent);
+
+    if (resetSortType) {
+      this.#currentSortType = SortType.DAY;
     }
   }
 
   #handleModeChange = () => {
+    this.#newPointPresenter.destroy();
     this.#pointPresenters.forEach((presenter) => presenter.resetView());
   };
 
@@ -98,6 +126,7 @@ export default class BoardPresenter {
     // updatePoint - обновленные данные
     switch (actionType) {
       case UserAction.UPDATE_POINT:
+        console.log(this.#pointsModel);
         this.#pointsModel.updatePoint(updateType, updatePoint);
         break;
       case UserAction.ADD_POINT:
@@ -117,15 +146,15 @@ export default class BoardPresenter {
     // - обновить всю доску (например, при переключении фильтра)
     switch (updateType) {
       case UpdateType.PATCH:
-        // - обновить - что????
-        // this.#pointPresenters.get(data.id).init(data);
-        break;
-      case UpdateType.MINOR:
-        // - обновить одну точку???
         this.#pointPresenters.get(data.id).init(data);
         break;
+      case UpdateType.MINOR:
+        this.#clearPointList();
+        this.#renderPointsList();
+        break;
       case UpdateType.MAJOR:
-        // - обновить всю доску (например, при переключении фильтра)
+        this.#clearPointList();
+        this.#renderPointsList({ resetSortType: true });
         break;
     }
   };
@@ -134,28 +163,25 @@ export default class BoardPresenter {
     if (this.#currentSortType === sortType) {
       return;
     }
-    this.#currentSortType(sortType);
+    this.#currentSortType = sortType;
+    // нужно перерисовать
     this.#clearPointList();
     this.#renderPointsList();
   };
 
   #renderNoPoints() {
+    this.#noPointComponent = new NoPointView({
+      filterType: this.#filterType,
+    });
     render(this.#noPointComponent, this.#pointContainer);
   }
 
   #renderPointSort() {
-    const prevSortComponent = this.#pointSort;
-
     this.#pointSort = new PointSort({
-      onSortTypeChange: this.#handleSortTypeChange,
       sortType: this.#currentSortType,
+      onSortTypeChange: this.#handleSortTypeChange,
     });
 
-    if (prevSortComponent) {
-      replace(this.#pointSort, prevSortComponent);
-      remove(prevSortComponent);
-    }
-
-    render(this.#pointSort, this.#pointContainer);
+    render(this.#pointSort, this.#pointContainer, RenderPosition.AFTERBEGIN);
   }
 }

@@ -49,9 +49,11 @@ export default class PointPresenter {
       point: this.#point,
       listOffers: this.#listOffers,
       listDestination: this.#listDestination,
+      isNewPoint: false,
       onClick: this.#handleEditClick,
       // отправка формы на сервер, заменяет форму на точку
       onFormSubmit: this.#handlePointSubmit,
+      onDeleteClick: this.#handleDeleteClick,
     });
 
     if (prevPointComponent === null || prevPointEditComponent === null) {
@@ -117,15 +119,23 @@ export default class PointPresenter {
   #handleFavoriteClick = () => {
     this.#handleDataChange(
       UserAction.UPDATE_POINT,
-      UpdateType.MINOR,
+      UpdateType.PATCH,
       { ...this.#point, isFavorite: !this.#point.isFavorite });
   };
 
   #handlePointSubmit = (point) => {
     this.#handleDataChange(
       UserAction.UPDATE_POINT,
-      UpdateType.MINOR,
+      UpdateType.PATCH,
       point);
     this.#replaceEditFormToCardPoint();
+  };
+
+  #handleDeleteClick = (point) => {
+    this.#handleDataChange(
+      UserAction.DELETE_POINT,
+      UpdateType.MINOR,
+      point,
+    );
   };
 }
