@@ -1,5 +1,5 @@
 import {remove, render, RenderPosition} from '../framework/render.js';
-import PointEditFormView from '../view/point-edit-form-view.js';
+import EditingCreationPointView from '../view/editing-creation-point-view.js';
 import {nanoid} from 'nanoid';
 import {UserAction, UpdateType} from '../const.js';
 
@@ -27,7 +27,7 @@ export default class NewPointPresenter {
       return;
     }
 
-    this.#pointEditFormComponent = new PointEditFormView({ // При создании НЕ указываем точку, чтобы был BLANK POINT
+    this.#pointEditFormComponent = new EditingCreationPointView({
       destinations: this.#destinations,
       listOffers: this.#listOffers,
       isNewPoint: true,

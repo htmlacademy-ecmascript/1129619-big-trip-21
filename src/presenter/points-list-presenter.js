@@ -40,7 +40,7 @@ export default class BoardPresenter {
     this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
-  get points() {
+  get pointsFiltered() {
     this.#filterType = this.#filterModel.filter;
     const points = this.#pointsModel.points;
     const filteredPoints = filter[this.#filterType](points);
@@ -95,8 +95,8 @@ export default class BoardPresenter {
       // первым аргументом добавляем список ul, вторым место куда это будет отрисовываться
       this.#renderPointSort();
       render(this.#containerForPoints, this.#pointContainer);
-      for (let i = 0; i < this.#pointsModel.points.length; i++) {
-        this.#renderPoint(this.#pointsModel.points[i]);
+      for (let i = 0; i < this.pointsFiltered.length; i++) {
+        this.#renderPoint(this.pointsFiltered[i]);
       }
     }
   }

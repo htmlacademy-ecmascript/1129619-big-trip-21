@@ -1,7 +1,7 @@
 import AbstractView from '../framework/view/abstract-view';
 
 function createFilterItemTemplate(filter, currentFilterType) {
-  const {type, isAvailability} = filter;
+  const {type, hasPoints} = filter;
 
   return (
     `<div class="trip-filters__filter">
@@ -11,7 +11,7 @@ function createFilterItemTemplate(filter, currentFilterType) {
       name="trip-filter"
       value="${type}"
       ${type === currentFilterType ? 'checked' : ''}
-      ${isAvailability ? '' : 'disabled'}>
+      ${hasPoints ? '' : 'disabled'}>
       <label class="trip-filters__filter-label" for="filter-${type}">${type}</label>
     </div>`
   );
