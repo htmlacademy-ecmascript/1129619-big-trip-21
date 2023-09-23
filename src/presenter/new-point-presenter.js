@@ -4,51 +4,51 @@ import {nanoid} from 'nanoid';
 import {UserAction, UpdateType} from '../const.js';
 
 export default class NewPointPresenter {
-  #pointListContainer = null;
+  #containerForPoints = null;
   #handleDataChange = null;
   #handleDestroy = null;
 
-  #pointEditFormComponent = null;
+  #pointEditComponent = null;
 
-  #destinations = [];
+  #listDestination = [];
   #listOffers = [];
 
-  constructor({pointListContainer, onDataChange, onDestroy}) {
-    this.#pointListContainer = pointListContainer;
+  constructor({containerForPoints, onDataChange, onDestroy}) {
+    this.#containerForPoints = containerForPoints;
     this.#handleDataChange = onDataChange;
     this.#handleDestroy = onDestroy;
   }
 
-  init(destinations, listOffers) {
-    this.#destinations = destinations;
+  init(listDestination, listOffers) {
+    this.#listDestination = listDestination;
     this.#listOffers = listOffers;
 
-    if (this.#pointEditFormComponent !== null) {
+    if (this.#pointEditComponent !== null) {
       return;
     }
 
-    this.#pointEditFormComponent = new EditingCreationPointView({
-      destinations: this.#destinations,
+    this.#pointEditComponent = new EditingCreationPointView({
+      listDestination: this.#listDestination,
       listOffers: this.#listOffers,
       isNewPoint: true,
       onFormSubmit: this.#handleFormSubmit,
       onDeleteClick: this.#handleDeleteClick,
     });
 
-    render(this.#pointEditFormComponent, this.#pointListContainer, RenderPosition.AFTERBEGIN);
+    render(this.#pointEditComponent, this.#containerForPoints, RenderPosition.AFTERBEGIN);
 
     document.addEventListener('keydown', this.#escKeyDownHandler);
   }
 
   destroy() {
-    if(this.#pointEditFormComponent === null) {
+    if(this.#pointEditComponent === null) {
       return;
     }
 
     this.#handleDestroy();
 
-    remove(this.#pointEditFormComponent);
-    this.#pointEditFormComponent = null;
+    remove(this.#pointEditComponent);
+    this.#pointEditComponent = null;
 
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   }

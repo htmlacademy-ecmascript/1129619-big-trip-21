@@ -22,7 +22,7 @@ const pointListPresenter = new BoardPresenter({
   pointContainer: tripEventsElement,
   pointsModel,
   filterModel,
-  oneNewTaskDestroy: handleNewTaskFormClose,
+  onNewTaskDestroy: handleNewTaskFormClose,
 });
 
 const newPointButtonView = new NewPointButtonView({

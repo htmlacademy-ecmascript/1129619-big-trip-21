@@ -1,6 +1,7 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 import { filterDateForEditorCreator } from '../utils/time';
 import flatpickr from 'flatpickr';
+import he from 'he';
 
 import 'flatpickr/dist/flatpickr.min.css';
 
@@ -29,6 +30,9 @@ function editingCreationPoint({ point, listOffers, listDestination, isNewPoint }
   const typeOffersObj = listOffers.find((item) => item.type === typePoint);
   const { offers } = typeOffersObj;
 
+  console.log(typeOffersObj);
+  console.log(typePoint);
+
   function createPhotosPointTemplate(destinationObj) {
     return (
       `<div class="event__photos-container">
@@ -50,7 +54,7 @@ function editingCreationPoint({ point, listOffers, listDestination, isNewPoint }
     if (+idOfferCheck === idOffer) {
       return 'checked';
     }
-  }).join('')} >
+  }).join('')}>
     <label class="event__offer-label" for="event-offer-luggage-${idOffer}">
     <span class="event__offer-title">${title}</span>
     &plus;&euro;&nbsp;
@@ -61,8 +65,7 @@ function editingCreationPoint({ point, listOffers, listDestination, isNewPoint }
   function createEventTypeListItemsTemplate() {
     return listOffers.map((offer) =>
       `<div class="event__type-item">
-        <input id="event-type-${offer.type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${offer.type}"
-        >
+        <input id="event-type-${offer.type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${offer.type}">
         <label class="event__type-label  event__type-label--${offer.type}" for="event-type-${offer.type}-1">${offer.type}</label>
       </div>`
     ).join('');
@@ -97,7 +100,7 @@ function editingCreationPoint({ point, listOffers, listDestination, isNewPoint }
             <label class="event__label  event__type-output" for="event-destination-1">
               ${typePoint}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${name}" list="destination-list-1">
+            <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${he.encode(name)}" list="destination-list-1">
             <datalist id="destination-list-1">
             ${createDestinationListItemsTemplate()}
             </datalist>
@@ -105,10 +108,10 @@ function editingCreationPoint({ point, listOffers, listDestination, isNewPoint }
 
           <div class="event__field-group  event__field-group--time">
             <label class="visually-hidden" for="event-start-time-${id}">From</label>
-            <input class="event__input  event__input--time" id="event-start-time-${id}" type="text" name="event-start-time" value="${startDate}">
+            <input class="event__input  event__input--time" id="event-start-time-${id}" type="text" name="event-start-time" value="${startDate}" required>
             &mdash;
             <label class="visually-hidden" for="event-end-time-${id}">To</label>
-            <input class="event__input  event__input--time" id="event-end-time-${id}" type="text" name="event-end-time" value="${endDate}">
+            <input class="event__input  event__input--time" id="event-end-time-${id}" type="text" name="event-end-time" value="${endDate}" required>
           </div>
 
           <div class="event__field-group  event__field-group--price">
@@ -116,7 +119,7 @@ function editingCreationPoint({ point, listOffers, listDestination, isNewPoint }
               <span class="visually-hidden">Price</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-${id}" type="text" name="event-price" value="${basePrice}">
+            <input class="event__input  event__input--price" id="event-price-${id}" type="number" name="event-price" value="${basePrice}">
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -305,11 +308,6 @@ export default class EditingCreationPointView extends AbstractStatefulView {
     this.element
       .querySelector('.event__reset-btn')
       .addEventListener('click', this.#deleteClickHandler);
-
-    this.element
-      .querySelector('.event__input--price')
-      .addEventListener('change', this.#priceChangeHandler);
-
 
     this.#setDatepicker();
 
