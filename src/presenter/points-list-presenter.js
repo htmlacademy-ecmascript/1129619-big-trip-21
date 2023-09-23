@@ -62,8 +62,8 @@ export default class BoardPresenter {
 
 
   init() {
-    this.#listOffers = [...this.#pointsModel.listOffers];
-    this.#listDestination = [...this.#pointsModel.listDestination];
+    // this.#listOffers = [...this.#pointsModel.listOffers];
+    // this.#listDestination = [...this.#pointsModel.listDestination];
     this.#renderPointsList();
   }
 

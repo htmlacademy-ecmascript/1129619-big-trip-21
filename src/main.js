@@ -19,10 +19,10 @@ const tripEventsElement = siteMainElement.querySelector('.trip-events');
 
 // мы создали модель обьект с ключом points и значением массива обьектов с точками
 const pointsModel = new PointsModel({
-  points: getRandomPoints(),
-  listOffers: getListOffers(),
-  listDestination: getDestinations(),
-  pointsApiService: new PointsApiService(END_POINT, AUTHORIZATION) });
+  pointsApiService: new PointsApiService(END_POINT, AUTHORIZATION),
+  listOffers: getListOffers,
+  listDestination: getDestinations,
+});
 const filterModel = new FilterModel();
 // аргументом мы передаем кусок разметки,
 // где у нас будет распологаться содержимое презентера
@@ -58,3 +58,4 @@ const filterPresenter = new FilterPresenter({
 
 filterPresenter.init();
 pointListPresenter.init();
+pointsModel.init();

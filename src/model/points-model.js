@@ -2,21 +2,16 @@ import Observable from '../framework/observable';
 
 
 export default class PointsModel extends Observable {
-  #points;
+  #points = [];
   #listOffers;
   #listDestination;
   #pointsApiService = null;
 
-  constructor({points, listOffers, listDestination, pointsApiService}) {
+  constructor({ listOffers, listDestination, pointsApiService}) {
     super();
     this.#pointsApiService = pointsApiService;
-    this.#points = points;
     this.#listOffers = listOffers;
     this.#listDestination = listDestination;
-
-    this.#pointsApiService.points.then((points) => {
-      console.log(points.map(this.#adaptToClient));
-    });
   }
 
   #adaptToClient(point) {
@@ -38,14 +33,15 @@ export default class PointsModel extends Observable {
 
   }
 
-  // id: nanoid(),
-  // basePrice: getRandomArrayElement(PRICE),
-  // typePoint,
-  // destination: getRandomArbitrary(0, 3),
-  // timeStart: getRandomArrayElement(Time.START),
-  // timeEnd: getRandomArrayElement(Time.END),
-  // offersCheck: getCheckedOffers(typePoint),
-  // isFavorite: Boolean(getRandomArbitrary(0, 1)),
+  async init() {
+    try {
+      const points = await this.#pointsApiService.points;
+      this.#points = points.map(this.#adaptToClient);
+      console.log(this.#points);
+    } catch(err) {
+      this.#points = [];
+    }
+  }
 
   get points() {
     return this.#points;
