@@ -30,9 +30,6 @@ function editingCreationPoint({ point, listOffers, listDestination, isNewPoint }
   const typeOffersObj = listOffers.find((item) => item.type === typePoint);
   const { offers } = typeOffersObj;
 
-  console.log(typeOffersObj);
-  console.log(typePoint);
-
   function createPhotosPointTemplate(destinationObj) {
     return (
       `<div class="event__photos-container">

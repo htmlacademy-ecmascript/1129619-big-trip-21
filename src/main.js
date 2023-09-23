@@ -6,6 +6,10 @@ import PointsModel from './model/points-model';
 import FilterModel from './model/filter-model';
 import FilterPresenter from './presenter/filter-presenter';
 import NewPointButtonView from './view/new-point-button';
+import PointsApiService from './points-api-service';
+
+const AUTHORIZATION = 'Basic vo1070vsk11A4470711';
+const END_POINT = 'https://21.objects.pages.academy/big-trip';
 
 const siteHeaderElement = document.querySelector('.page-header');
 const siteMainElement = document.querySelector('.page-main');
@@ -14,7 +18,7 @@ const siteTripFiltersElement = siteHeaderElement.querySelector('.trip-controls__
 const tripEventsElement = siteMainElement.querySelector('.trip-events');
 
 // мы создали модель обьект с ключом points и значением массива обьектов с точками
-const pointsModel = new PointsModel(getRandomPoints(), getListOffers(), getDestinations());
+const pointsModel = new PointsModel({ points: getRandomPoints(), listOffers: getListOffers(), listDestination: getDestinations(), pointsApiService: new PointsApiService(END_POINT, AUTHORIZATION) });
 const filterModel = new FilterModel();
 // аргументом мы передаем кусок разметки,
 // где у нас будет распологаться содержимое презентера

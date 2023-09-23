@@ -6,7 +6,7 @@ const Method = {
 };
 
 export default class PointsApiService extends ApiService {
-  get tasks() {
+  get points() {
     return this._load({url: 'points'})
       .then(ApiService.parseResponse);
   }
