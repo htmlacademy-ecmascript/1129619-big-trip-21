@@ -7,6 +7,7 @@ import NoPointView from '../view/no-point-view';
 import PointSort from '../view/sort-view';
 import PointPresenter from './point-presenter';
 import NewPointPresenter from './new-point-presenter';
+import LoadingView from '../view/loading-view';
 
 export default class BoardPresenter {
   // создали список ul в который элементами списка будем добавлять li (контент);
@@ -19,11 +20,13 @@ export default class BoardPresenter {
   #pointsModel = null;
   #listOffers = null;
   #listDestination = [];
+  #loadingComponent = new LoadingView();
 
   #pointPresenters = new Map();
   #currentSortType = SortType.DAY;
   #filterType = FilterType.EVERYTHING;
   #newPointPresenter = null;
+  #isLoading = true;
 
   constructor({ pointContainer, pointsModel, filterModel, onNewTaskDestroy }) {
     this.#pointContainer = pointContainer;
@@ -77,8 +80,6 @@ export default class BoardPresenter {
     });
     pointPresenter.init(point);
     this.#pointPresenters.set(point.id, pointPresenter);
-    // console.log(this.points);
-    // console.log(this.#pointsModel);
   }
 
   createPoint() {
@@ -91,13 +92,18 @@ export default class BoardPresenter {
     // если нет точек, то вставляем заглушку
     if (!this.#pointsModel.points.length) {
       this.#renderNoPoints();
-    } else {
-      // первым аргументом добавляем список ul, вторым место куда это будет отрисовываться
-      this.#renderPointSort();
-      render(this.#containerForPoints, this.#pointContainer);
-      for (let i = 0; i < this.pointsFiltered.length; i++) {
-        this.#renderPoint(this.pointsFiltered[i]);
-      }
+    }
+
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
+    // первым аргументом добавляем список ul, вторым место куда это будет отрисовываться
+    this.#renderPointSort();
+    render(this.#containerForPoints, this.#pointContainer);
+    for (let i = 0; i < this.pointsFiltered.length; i++) {
+      this.#renderPoint(this.pointsFiltered[i]);
+
     }
   }
 
@@ -107,6 +113,7 @@ export default class BoardPresenter {
     this.#pointPresenters.clear();
 
     remove(this.#pointSort);
+    remove(this.#loadingComponent);
     remove(this.#noPointComponent);
 
     if (resetSortType) {
@@ -120,7 +127,6 @@ export default class BoardPresenter {
   };
 
   #handleViewAction = (actionType, updateType, updatePoint) => {
-    console.log(actionType, updateType, updatePoint);
     // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
     // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
     // updatePoint - обновленные данные
@@ -156,6 +162,11 @@ export default class BoardPresenter {
         this.#clearPointList();
         this.#renderPointsList({ resetSortType: true });
         break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#renderPointsList();
+        break;
     }
   };
 
@@ -169,11 +180,15 @@ export default class BoardPresenter {
     this.#renderPointsList();
   };
 
+  #renderLoading() {
+    render(this.#loadingComponent, this.#pointContainer.element, RenderPosition.AFTERBEGIN);
+  }
+
   #renderNoPoints() {
     this.#noPointComponent = new NoPointView({
       filterType: this.#filterType,
     });
-    render(this.#noPointComponent, this.#pointContainer);
+    render(this.#noPointComponent, this.#pointContainer.element);
   }
 
   #renderPointSort() {
