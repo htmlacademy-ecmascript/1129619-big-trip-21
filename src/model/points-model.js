@@ -14,8 +14,38 @@ export default class PointsModel extends Observable {
     this.#listOffers = listOffers;
     this.#listDestination = listDestination;
 
-    console.log(pointsApiService);
+    this.#pointsApiService.points.then((points) => {
+      console.log(points.map(this.#adaptToClient));
+    });
   }
+
+  #adaptToClient(point) {
+    const adaptedPoint = {...point,
+      basePrice: point['base_price'],
+      timeStart: point['date_from'],
+      timeEnd: point['date_to'],
+      isFavorite: point['is_favorite'],
+      offersCheck: point['offers'],
+    };
+
+    delete adaptedPoint['base_price'];
+    delete adaptedPoint['date_from'];
+    delete adaptedPoint['date_to'];
+    delete adaptedPoint['is_favorite'];
+    delete adaptedPoint['offers'];
+
+    return adaptedPoint;
+
+  }
+
+  // id: nanoid(),
+  // basePrice: getRandomArrayElement(PRICE),
+  // typePoint,
+  // destination: getRandomArbitrary(0, 3),
+  // timeStart: getRandomArrayElement(Time.START),
+  // timeEnd: getRandomArrayElement(Time.END),
+  // offersCheck: getCheckedOffers(typePoint),
+  // isFavorite: Boolean(getRandomArbitrary(0, 1)),
 
   get points() {
     return this.#points;
