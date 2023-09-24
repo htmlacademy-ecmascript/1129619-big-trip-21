@@ -1,4 +1,4 @@
-const POINTS_COUNT = 10;
+const POINTS_COUNT = 5;
 const POINTS_TYPE = ['taxi', 'ship', 'flight'];
 const Time = {
   START:['2022-08-06T00:05:00.845Z', '2024-08-07T01:10:20.845Z', '2023-08-08T03:19:43.845Z', '2023-08-09T04:16:32.845Z', '2023-08-06T05:28:12.845Z',],

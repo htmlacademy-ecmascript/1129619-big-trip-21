@@ -1,6 +1,7 @@
 import { render, replace, remove } from '../framework/render';
 import EditingCreationPointView from '../view/editing-creation-point-view';
 import PointView from '../view/point-view';
+import { UserAction, UpdateType } from '../const';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -16,41 +17,43 @@ export default class PointPresenter {
   #handleModeChange = null;
 
   #point = null;
-  #listOffers = null;
   #mode = Mode.DEFAULT;
 
-  #listDestination = [];
+  #offers = [];
+  #destinations = [];
 
 
-  constructor({ containerForPoints, listOffers, listDestination, onDataChange, onModeChange }) {
+  constructor({ containerForPoints, onDataChange, onModeChange }) {
     this.#containerForPoints = containerForPoints;
-    this.#listOffers = listOffers;
-    this.#listDestination = listDestination;
     this.#handleDataChange = onDataChange;
     this.#handleModeChange = onModeChange;
   }
 
-  init(point) {
+  init(point, destinations, offers) {
     this.#point = point;
+    this.#destinations = destinations;
+    this.#offers = offers;
 
     const prevPointComponent = this.#pointComponent;
     const prevPointEditComponent = this.#pointEditComponent;
 
     this.#pointComponent = new PointView({
       point: this.#point,
-      listOffers: this.#listOffers,
-      listDestination: this.#listDestination,
+      destinations: this.#destinations,
+      offers: this.#offers,
       onClick: this.#handlePointClick,
       onFavoriteClick: this.#handleFavoriteClick,
     });
 
+
     this.#pointEditComponent = new EditingCreationPointView({
       point: this.#point,
-      listOffers: this.#listOffers,
-      listDestination: this.#listDestination,
+      destinations: this.#destinations,
+      offers: this.#offers,
+      isNewPoint: false,
       onClick: this.#handleEditClick,
-      // отправка формы на сервер, заменяет форму на точку
       onFormSubmit: this.#handlePointSubmit,
+      onDeleteClick: this.#handleDeleteClick,
     });
 
     if (prevPointComponent === null || prevPointEditComponent === null) {
@@ -114,11 +117,25 @@ export default class PointPresenter {
   };
 
   #handleFavoriteClick = () => {
-    this.#handleDataChange({ ...this.#point, isFavorite: !this.#point.isFavorite });
+    this.#handleDataChange(
+      UserAction.UPDATE_POINT,
+      UpdateType.PATCH,
+      { ...this.#point, isFavorite: !this.#point.isFavorite });
   };
 
   #handlePointSubmit = (point) => {
-    this.#handleDataChange(point);
+    this.#handleDataChange(
+      UserAction.UPDATE_POINT,
+      UpdateType.PATCH,
+      point);
     this.#replaceEditFormToCardPoint();
+  };
+
+  #handleDeleteClick = (point) => {
+    this.#handleDataChange(
+      UserAction.DELETE_POINT,
+      UpdateType.MINOR,
+      point,
+    );
   };
 }
