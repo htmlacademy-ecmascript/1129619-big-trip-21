@@ -47,14 +47,17 @@ function handleNewPointButtonClick() {
 
 render(new TripInfo(), siteTripMainElement, RenderPosition.AFTERBEGIN);
 
-render(newPointButtonView, siteTripMainElement);
-
 const filterPresenter = new FilterPresenter({
   filterContainer: siteTripFiltersElement,
   filterModel,
   pointsModel
 });
 
+render(newPointButtonView, siteTripMainElement);
+
 filterPresenter.init();
 pointListPresenter.init();
-pointsModel.init();
+pointsModel.init()
+  .finally(() => {
+    newPointButtonView.element.disabled = false;
+  });
