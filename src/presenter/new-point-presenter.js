@@ -10,8 +10,8 @@ export default class NewPointPresenter {
 
   #pointEditComponent = null;
 
-  #listDestination = [];
-  #listOffers = [];
+  #destinations = [];
+  #offers = [];
 
   constructor({containerForPoints, onDataChange, onDestroy}) {
     this.#containerForPoints = containerForPoints;
@@ -19,17 +19,17 @@ export default class NewPointPresenter {
     this.#handleDestroy = onDestroy;
   }
 
-  init(listDestination, listOffers) {
-    this.#listDestination = listDestination;
-    this.#listOffers = listOffers;
+  init(destinations, offers) {
+    this.#destinations = destinations;
+    this.#offers = offers;
 
     if (this.#pointEditComponent !== null) {
       return;
     }
 
     this.#pointEditComponent = new EditingCreationPointView({
-      listDestination: this.#listDestination,
-      listOffers: this.#listOffers,
+      destinations: this.#destinations,
+      offers: this.#offers,
       isNewPoint: true,
       onFormSubmit: this.#handleFormSubmit,
       onDeleteClick: this.#handleDeleteClick,

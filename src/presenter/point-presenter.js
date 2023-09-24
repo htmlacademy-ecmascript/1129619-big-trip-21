@@ -17,41 +17,41 @@ export default class PointPresenter {
   #handleModeChange = null;
 
   #point = null;
-  #listOffers = null;
   #mode = Mode.DEFAULT;
 
-  #listDestination = [];
+  #offers = [];
+  #destinations = [];
 
 
-  constructor({ containerForPoints, listOffers, listDestination, onDataChange, onModeChange }) {
+  constructor({ containerForPoints, onDataChange, onModeChange }) {
     this.#containerForPoints = containerForPoints;
-    this.#listOffers = listOffers;
-    this.#listDestination = listDestination;
     this.#handleDataChange = onDataChange;
     this.#handleModeChange = onModeChange;
   }
 
-  init(point) {
+  init(point, destinations, offers) {
     this.#point = point;
+    this.#destinations = destinations;
+    this.#offers = offers;
 
     const prevPointComponent = this.#pointComponent;
     const prevPointEditComponent = this.#pointEditComponent;
 
     this.#pointComponent = new PointView({
       point: this.#point,
-      listOffers: this.#listOffers,
-      listDestination: this.#listDestination,
+      destinations: this.#destinations,
+      offers: this.#offers,
       onClick: this.#handlePointClick,
       onFavoriteClick: this.#handleFavoriteClick,
     });
 
+
     this.#pointEditComponent = new EditingCreationPointView({
       point: this.#point,
-      listOffers: this.#listOffers,
-      listDestination: this.#listDestination,
+      destinations: this.#destinations,
+      offers: this.#offers,
       isNewPoint: false,
       onClick: this.#handleEditClick,
-      // отправка формы на сервер, заменяет форму на точку
       onFormSubmit: this.#handlePointSubmit,
       onDeleteClick: this.#handleDeleteClick,
     });

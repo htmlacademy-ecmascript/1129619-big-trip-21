@@ -177,9 +177,6 @@
 //   };
 // }
 
-// function getRandomPoints() {
-//   return Array.from({ length: POINTS_COUNT }, getRandomPoint);
-// }
 
 // function getCheckedOffers(typePoint) {
 //   const checkedOffersId = [];
@@ -199,5 +196,5 @@
 //   return mockDestinations;
 // }
 
-// export { getRandomPoint, getListOffers, getRandomPoints, getDestinations };
+// export { getListOffers, getDestinations };
 

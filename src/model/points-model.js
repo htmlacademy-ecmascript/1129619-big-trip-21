@@ -4,19 +4,18 @@ import { UpdateType } from '../const';
 
 export default class PointsModel extends Observable {
   #points = [];
-  #listOffers;
-  #listDestination;
+  #offers = [];
+  #destinations = [];
   #pointsApiService = null;
 
-  constructor({ listOffers, listDestination, pointsApiService}) {
+  constructor({ pointsApiService }) {
     super();
     this.#pointsApiService = pointsApiService;
-    this.#listOffers = listOffers;
-    this.#listDestination = listDestination;
   }
 
   #adaptToClient(point) {
     const adaptedPoint = {...point,
+      typePoint: point['type'],
       basePrice: point['base_price'],
       timeStart: point['date_from'],
       timeEnd: point['date_to'],
@@ -24,6 +23,7 @@ export default class PointsModel extends Observable {
       offersCheck: point['offers'],
     };
 
+    delete adaptedPoint['type'];
     delete adaptedPoint['base_price'];
     delete adaptedPoint['date_from'];
     delete adaptedPoint['date_to'];
@@ -38,9 +38,13 @@ export default class PointsModel extends Observable {
     try {
       const points = await this.#pointsApiService.points;
       this.#points = points.map(this.#adaptToClient);
-      console.log(this.#points);
+
+      this.#destinations = await this.#pointsApiService.destinations;
+      this.#offers = await this.#pointsApiService.offers;
     } catch(err) {
       this.#points = [];
+      this.#destinations = [];
+      this.#offers = [];
     }
 
     this._notify(UpdateType.INIT);
@@ -50,12 +54,12 @@ export default class PointsModel extends Observable {
     return this.#points;
   }
 
-  get listOffers() {
-    return this.#listOffers;
+  get offers() {
+    return this.#offers;
   }
 
-  get listDestination() {
-    return this.#listDestination;
+  get destinations() {
+    return this.#destinations;
   }
 
   updatePoint(updateType, updatedPoint) {

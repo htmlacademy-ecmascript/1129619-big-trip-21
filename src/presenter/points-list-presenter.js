@@ -18,8 +18,6 @@ export default class BoardPresenter {
 
   #pointContainer = null;
   #pointsModel = null;
-  #listOffers = null;
-  #listDestination = [];
   #loadingComponent = new LoadingView();
 
   #pointPresenters = new Map();
@@ -64,47 +62,48 @@ export default class BoardPresenter {
   }
 
 
-  init() {
-    // this.#listOffers = [...this.#pointsModel.listOffers];
-    // this.#listDestination = [...this.#pointsModel.listDestination];
-    this.#renderPointsList();
-  }
-
   #renderPoint(point) {
     const pointPresenter = new PointPresenter({
       containerForPoints: this.#containerForPoints.element,
-      listOffers: this.#listOffers,
-      listDestination: this.#listDestination,
       onDataChange: this.#handleViewAction,
       onModeChange: this.#handleModeChange,
     });
-    pointPresenter.init(point);
+    pointPresenter.init(point, this.destinations, this.offers);
     this.#pointPresenters.set(point.id, pointPresenter);
   }
 
   createPoint() {
     this.#currentSortType = SortType.DAY;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this.#newPointPresenter.init(this.listDestination, this.listOffers);
+    this.#newPointPresenter.init(this.destinations, this.offers);
   }
 
   #renderPointsList() {
     // если нет точек, то вставляем заглушку
-    if (!this.#pointsModel.points.length) {
-      this.#renderNoPoints();
-    }
-
     if (this.#isLoading) {
       this.#renderLoading();
       return;
     }
+
+    if (!this.#pointsModel.points.length) {
+      this.#renderNoPoints();
+    }
+
     // первым аргументом добавляем список ul, вторым место куда это будет отрисовываться
     this.#renderPointSort();
     render(this.#containerForPoints, this.#pointContainer);
     for (let i = 0; i < this.pointsFiltered.length; i++) {
       this.#renderPoint(this.pointsFiltered[i]);
-
+      // }
     }
+  }
+
+  get destinations() {
+    return this.#pointsModel.destinations;
+  }
+
+  get offers() {
+    return this.#pointsModel.offers;
   }
 
   #clearPointList(resetSortType = false) {
@@ -121,6 +120,10 @@ export default class BoardPresenter {
     }
   }
 
+  init() {
+    this.#renderPointsList();
+  }
+
   #handleModeChange = () => {
     this.#newPointPresenter.destroy();
     this.#pointPresenters.forEach((presenter) => presenter.resetView());
@@ -132,7 +135,6 @@ export default class BoardPresenter {
     // updatePoint - обновленные данные
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        console.log(this.#pointsModel);
         this.#pointsModel.updatePoint(updateType, updatePoint);
         break;
       case UserAction.ADD_POINT:
@@ -145,14 +147,13 @@ export default class BoardPresenter {
   };
 
   #handleModelEvent = (updateType, data) => {
-    console.log(updateType, data);
     // В зависимости от типа изменений решаем, что делать:
     // - обновить часть списка (например, когда поменялось описание)
     // - обновить список (например, когда задача ушла в архив)
     // - обновить всю доску (например, при переключении фильтра)
     switch (updateType) {
       case UpdateType.PATCH:
-        this.#pointPresenters.get(data.id).init(data);
+        this.#pointPresenters.get(data.id).init(data, this.destinations, this.offers);
         break;
       case UpdateType.MINOR:
         this.#clearPointList();
@@ -181,14 +182,14 @@ export default class BoardPresenter {
   };
 
   #renderLoading() {
-    render(this.#loadingComponent, this.#pointContainer.element, RenderPosition.AFTERBEGIN);
+    render(this.#loadingComponent, this.#pointContainer, RenderPosition.AFTERBEGIN);
   }
 
   #renderNoPoints() {
     this.#noPointComponent = new NoPointView({
       filterType: this.#filterType,
     });
-    render(this.#noPointComponent, this.#pointContainer.element);
+    render(this.#noPointComponent, this.#pointContainer);
   }
 
   #renderPointSort() {

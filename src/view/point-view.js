@@ -6,11 +6,10 @@ import {
   filterPointDay,
 } from '../utils/time';
 
-function createPoint(point, listOffers, listDestination) {
+function createPoint(point, listDestination, listOffers) {
   const { basePrice, destination, isFavorite, offersCheck, timeStart, timeEnd, typePoint } = point;
 
   const destinationPointObj = listDestination.find((item) => item.id === destination);
-  const { name } = destinationPointObj;
 
   const day = filterDayMonth(timeStart);
   const hoursStart = filterHoursPoints(timeStart);
@@ -19,17 +18,17 @@ function createPoint(point, listOffers, listDestination) {
   const startPointDay = filterPointDay(timeStart);
 
   const typeOffersObj = listOffers.find((offer) => offer.type === typePoint);
-  const { offers } = typeOffersObj;
 
-  const createTypeOffersTemplate = () => offers.map(({ idOffer, title, price }) => offersCheck.map((checkedOfferId) => {
-    if (checkedOfferId === idOffer) {
+  const createTypeOffersTemplate = () => typeOffersObj.offers.map((offer) => {
+    const isChecked = offersCheck.includes(offer.id) ? 'checked' : '';
+    if (isChecked) {
       return `<li class="event__offer">
-              <span class="event__offer-title">${title}</span>
+              <span class="event__offer-title">${offer.title}</span>
               &plus;&euro;&nbsp;
-              <span class="event__offer-price">${price}</span>
+              <span class="event__offer-price">${offer.price}</span>
             </li>`;
     }
-  }).join('')).join('');
+  }).join('');
 
 
   const favoriteClassPoint = isFavorite ? 'event__favorite-btn--active' : '';
@@ -41,7 +40,7 @@ function createPoint(point, listOffers, listDestination) {
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/${typePoint}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${typePoint} ${name}</h3>
+        <h3 class="event__title">${typePoint} ${destinationPointObj?.name || ''}</h3>
         <div class="event__schedule">
           <p class="event__time">
             <time class="event__start-time" datetime="${timeStart}">${hoursStart}</time>
@@ -57,7 +56,7 @@ function createPoint(point, listOffers, listDestination) {
         <ul class="event__selected-offers">
 
 
-        ${ createTypeOffersTemplate(offers) }
+        ${ createTypeOffersTemplate() }
 
         </ul>
         <button class="event__favorite-btn ${favoriteClassPoint}" type="button">
@@ -76,16 +75,16 @@ function createPoint(point, listOffers, listDestination) {
 
 export default class PointView extends AbstractStatefulView {
   #point = null;
-  #listOffers = null;
+  #offers = null;
   #handleClick = null;
   #handleFavoriteClick = null;
-  #listDestination = null;
+  #destinations = null;
 
-  constructor({ point, listOffers, listDestination, onClick, onFavoriteClick }) {
+  constructor({ point, offers, destinations, onClick, onFavoriteClick }) {
     super();
     this.#point = point;
-    this.#listOffers = listOffers;
-    this.#listDestination = listDestination;
+    this.#offers = offers;
+    this.#destinations = destinations;
     this.#handleClick = onClick;
     this.#handleFavoriteClick = onFavoriteClick;
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#clickHandler);
@@ -93,7 +92,7 @@ export default class PointView extends AbstractStatefulView {
   }
 
   get template() {
-    return createPoint(this.#point, this.#listOffers, this.#listDestination);
+    return createPoint(this.#point, this.#destinations, this.#offers);
   }
 
   #favoriteClickHandler = (evt) => {

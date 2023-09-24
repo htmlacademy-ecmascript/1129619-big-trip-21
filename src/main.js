@@ -1,5 +1,5 @@
 import { render, RenderPosition } from './framework/render';
-import { getRandomPoints, getListOffers, getDestinations } from './mock/points';
+// import { getListOffers, getDestinations } from './mock/points';
 import TripInfo from './view/trip-info-view';
 import BoardPresenter from './presenter/points-list-presenter';
 import PointsModel from './model/points-model';
@@ -20,9 +20,8 @@ const tripEventsElement = siteMainElement.querySelector('.trip-events');
 // мы создали модель обьект с ключом points и значением массива обьектов с точками
 const pointsModel = new PointsModel({
   pointsApiService: new PointsApiService(END_POINT, AUTHORIZATION),
-  listOffers: getListOffers,
-  listDestination: getDestinations,
 });
+
 const filterModel = new FilterModel();
 // аргументом мы передаем кусок разметки,
 // где у нас будет распологаться содержимое презентера

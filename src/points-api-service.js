@@ -11,6 +11,16 @@ export default class PointsApiService extends ApiService {
       .then(ApiService.parseResponse);
   }
 
+  get destinations() {
+    return this._load({url: 'destinations'})
+      .then(ApiService.parseResponse);
+  }
+
+  get offers() {
+    return this._load({url: 'offers'}) // получаем данные с сервера
+      .then(ApiService.parseResponse); // преобразуем в json
+  }
+
   async updatePoint(point) {
     const response = await this._load({
       url: `points/${point.id}`,
@@ -27,6 +37,7 @@ export default class PointsApiService extends ApiService {
   #adaptToServer(point) {
     const adaptedPoint = {
       ...point,
+      'type': point.typePoint,
       'base_price': point.basePrice,
       'date_from': point.timeStart,
       'date_to': point.timeEnd,
@@ -34,6 +45,7 @@ export default class PointsApiService extends ApiService {
       'offers': point.offersCheck,
     };
 
+    delete adaptedPoint.typePoint;
     delete adaptedPoint.basePrice;
     delete adaptedPoint.timeStart;
     delete adaptedPoint.timeEnd;
