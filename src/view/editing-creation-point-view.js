@@ -80,7 +80,7 @@ function editingCreationPoint(point, listOffers, listDestination, isNewPoint) {
   function createEventTypeListItemsTemplate() {
     return listOffers.map((offer) =>
       `<div class="event__type-item">
-        <input id="event-type-${offer.type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${offer.type}">
+        <input id="event-type-${offer.type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${offer.type}" ${offer.type === typePoint ? 'checked' : ''}>
         <label class="event__type-label  event__type-label--${offer.type}" for="event-type-${offer.type}-1">${offer.type}</label>
       </div>`
     ).join('');
