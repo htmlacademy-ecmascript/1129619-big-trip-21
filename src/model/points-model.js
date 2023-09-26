@@ -14,7 +14,8 @@ export default class PointsModel extends Observable {
   }
 
   #adaptToClient(point) {
-    const adaptedPoint = {...point,
+    const adaptedPoint = {
+      ...point,
       typePoint: point['type'],
       basePrice: point['base_price'],
       timeStart: point['date_from'],
@@ -41,7 +42,7 @@ export default class PointsModel extends Observable {
 
       this.#destinations = await this.#pointsApiService.destinations;
       this.#offers = await this.#pointsApiService.offers;
-    } catch(err) {
+    } catch (err) {
       this.#points = [];
       this.#destinations = [];
       this.#offers = [];
@@ -78,29 +79,34 @@ export default class PointsModel extends Observable {
     this._notify(updateType, updatedPoint);
   }
 
-  addPoint(updateType, updatedPoint) {
-    this.#points = [
-      updatedPoint,
-      ...this.#points,
-    ];
-
-    this._notify(updateType, updatedPoint);
+  async addPoint(updateType, updatedPoint) {
+    try {
+      const response = await this.#pointsApiService.addPoint(updatedPoint);
+      const newPoint = this.#adaptToClient(response);
+      this.#points = [newPoint, ...this.#points];
+      this._notify(updateType, newPoint);
+    } catch (err) {
+      throw new Error('Can\'t add task');
+    }
   }
 
 
-  deletePoint(updateType, updatedPoint) {
+  async deletePoint(updateType, updatedPoint) {
     const index = this.#points.findIndex((task) => task.id === updatedPoint.id);
 
     if (index === -1) {
-      throw new Error('Can\'t delete unexisting task');
+      throw new Error('Can\'t delete unexisting point');
     }
 
-    this.#points = [
-      ...this.#points.slice(0, index),
-      ...this.#points.slice(index + 1),
-    ];
-
-    this._notify(updateType);
+    try {
+      await this.#pointsApiService.deletePoint(updatedPoint);
+      this.#points = [
+        ...this.#points.slice(0, index),
+        ...this.#points.slice(index + 1),
+      ];
+      this._notify(updateType);
+    } catch (err) {
+      throw new Error('Can\'t delete point');
+    }
   }
-
 }
