@@ -6,9 +6,9 @@ import he from 'he';
 import 'flatpickr/dist/flatpickr.min.css';
 
 const BLANK_DATA_TRIP = {
-  type: 'flight',
+  typePoint: 'flight',
   basePrice: 0,
-  destinations: '',
+  destination: '',
   timeStart: new Date(),
   timeEnd: null,
   offersCheck: [],
@@ -33,7 +33,7 @@ function editingCreationPoint(point, listOffers, listDestination, isNewPoint) {
   }
 
   function createDestinationsBlockTemplate() {
-    if (destinationPointObj.description) {
+    if (destinationPointObj?.description) {
       return `<section class="event__section  event__section--destination">
               <h3 class="event__section-title  event__section-title--destination">Destination</h3>
               <p class="event__destination-description">${destinationPointObj.description}</p>
@@ -312,8 +312,6 @@ export default class EditingCreationPointView extends AbstractStatefulView {
 
   };
 
-  // point не единственное свой-во нашего состояние, будут еще в дальнейшем
-  // нет обращения к this, поэтому метод статичный
   static parsePointToState = (point) => ({
     ...point,
     isSaving: false,

@@ -19,8 +19,8 @@ export default class PointsApiService extends ApiService {
   }
 
   get offers() {
-    return this._load({url: 'offers'}) // получаем данные с сервера
-      .then(ApiService.parseResponse); // преобразуем в json
+    return this._load({url: 'offers'})
+      .then(ApiService.parseResponse);
   }
 
   async updatePoint(point) {
@@ -40,8 +40,8 @@ export default class PointsApiService extends ApiService {
     const response = await this._load({
       url: 'points',
       method: Method.POST,
-      body: JSON.stringify(this.#adaptToServer(point)),
-      headers: new Headers({'Content-Type': 'application/json'})
+      body: JSON.stringify(PointsApiService.adaptToServer(point)),
+      headers: new Headers({'Content-Type': 'application/json'}),
     });
 
     const parsedResponse = await ApiService.parseResponse(response);
