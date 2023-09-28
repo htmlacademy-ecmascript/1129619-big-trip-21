@@ -6,16 +6,17 @@ import he from 'he';
 import 'flatpickr/dist/flatpickr.min.css';
 
 const BLANK_DATA_TRIP = {
-  type: 'flight',
+  typePoint: 'flight',
   basePrice: 0,
-  destinations: '',
+  destination: '',
   timeStart: new Date(),
   timeEnd: null,
   offersCheck: [],
+  isFavorite: false,
 };
 
 function editingCreationPoint(point, listOffers, listDestination, isNewPoint) {
-  const { id, basePrice, destination, offersCheck, timeStart, timeEnd, typePoint } = point;
+  const { id, basePrice, destination, offersCheck, timeStart, timeEnd, typePoint, isSaving, isDeleting, isDisabled } = point;
 
   const startDate = filterDateForEditorCreator(timeStart);
   const endDate = filterDateForEditorCreator(timeEnd);
@@ -25,7 +26,7 @@ function editingCreationPoint(point, listOffers, listDestination, isNewPoint) {
   const typeOffersObj = listOffers.find((item) => item.type === typePoint);
 
   function createPhotosPointTemplate() {
-    if (destinationPointObj) { // Если destination есть, то отрисовываем картинки
+    if (destinationPointObj) {
       return destinationPointObj.pictures.map((picture) =>
         `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`
       ).join('');
@@ -33,7 +34,7 @@ function editingCreationPoint(point, listOffers, listDestination, isNewPoint) {
   }
 
   function createDestinationsBlockTemplate() {
-    if (destinationPointObj) {
+    if (destinationPointObj?.description) {
       return `<section class="event__section  event__section--destination">
               <h3 class="event__section-title  event__section-title--destination">Destination</h3>
               <p class="event__destination-description">${destinationPointObj.description}</p>
@@ -47,12 +48,6 @@ function editingCreationPoint(point, listOffers, listDestination, isNewPoint) {
   }
 
   const destinationsBlockTemplate = createDestinationsBlockTemplate();
-
-  // function createDescriptionPointTemplate(destinationObj) {
-  //   return (
-  //     `<p class="event__destination-description">${destinationObj.description}</p>`);
-  // }
-
 
   const createListOffersForPointTemplate = () => typeOffersObj.offers.map((offer) => {
     const isChecked = offersCheck.includes(offer.id) ? 'checked' : '';
@@ -82,21 +77,27 @@ function editingCreationPoint(point, listOffers, listDestination, isNewPoint) {
   }
   const offersBlockTemplate = createOffersBlockTemplate();
 
-  /// типы событий
   function createEventTypeListItemsTemplate() {
     return listOffers.map((offer) =>
       `<div class="event__type-item">
-        <input id="event-type-${offer.type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${offer.type}">
+        <input id="event-type-${offer.type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${offer.type}" ${offer.type === typePoint ? 'checked' : ''}>
         <label class="event__type-label  event__type-label--${offer.type}" for="event-type-${offer.type}-1">${offer.type}</label>
       </div>`
     ).join('');
   }
 
-  // список городов для выбора
   function createDestinationListItemsTemplate() {
     return listDestination.map((item) =>
       `<option value="${item.name}"></option>`
     ).join('');
+  }
+
+  function createResetBtnTemplate() {
+    if (isNewPoint) {
+      return `<button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>Cancel</button>`;
+    } else {
+      return `<button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>${isDeleting ? 'Deleting...' : 'Delete'}</button>`;
+    }
   }
 
   return /*html*/ `
@@ -144,13 +145,14 @@ function editingCreationPoint(point, listOffers, listDestination, isNewPoint) {
             <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${basePrice}">
           </div>
 
-          <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">${isNewPoint ? 'Cancel' : 'Delete'}</button>
+          <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
+
+          ${createResetBtnTemplate()}
                   ${isNewPoint ? '' : '<button class="event__rollup-btn" type="button"><span class="visually-hidden">Open event</span></button>'}
         </header>
         <section class="event__details">
-          ${offersBlockTemplate};
-          ${destinationsBlockTemplate};
+          ${offersBlockTemplate}
+          ${destinationsBlockTemplate}
 
         </section>
       </form>
@@ -211,45 +213,34 @@ export default class EditingCreationPointView extends AbstractStatefulView {
 
   #typeChangeHandler = (evt) => {
     this.updateElement({
-      point: {
-        ...this._state.point,
-        typePoint: evt.target.value,
-        offers: []
-      }
+      typePoint: evt.target.value,
+      offers: []
     });
   };
 
   #destinationChangeHandler = (evt) => {
     const selectedDestination = this.#destinations
       .find((item) => item.name === evt.target.value);
-
     const selectedDestinationId = (selectedDestination) ? selectedDestination.id : null;
-
     this.updateElement({
-      point: {
-        ...this._state.point,
-        destinations: selectedDestinationId
-      }
+      ...this._state.point,
+      destination: selectedDestinationId
     });
   };
 
   #offerChangeHandler = () => {
     const checkedBoxes = Array.from(this.element.querySelectorAll('.event__offer-checkbox:checked'));
-
+    const updatedCheckedCheckboxes = [];
+    checkedBoxes.map((element) => updatedCheckedCheckboxes.push(element.dataset.id, 10));
     this._setState({
-      point: {
-        ...this._state.point,
-        offersCheck: checkedBoxes.map((element) => element.dataset.id)
-      }
+      ...this._state.point,
+      offersCheck: updatedCheckedCheckboxes,
     });
   };
 
   #priceChangeHandler = (evt) => {
-    this._setState({
-      point: {
-        ...this._state.point,
-        basePrice: evt.target.value
-      }
+    this.updateElement({
+      basePrice: parseInt((evt.target.value), 10),
     });
   };
 
@@ -320,12 +311,22 @@ export default class EditingCreationPointView extends AbstractStatefulView {
 
   };
 
-  // point не единственное свой-во нашего состояние, будут еще в дальнейшем
-  // нет обращения к this, поэтому метод статичный
-  static parsePointToState = (point) => ({ ...point });
+  static parsePointToState = (point) => ({
+    ...point,
+    isSaving: false,
+    isDeleting: false,
+    isDisabled: false,
+  });
 
   static parseStateToPoint(state) {
-    const point = {...state};
+    const point = {
+      ...state
+    };
+
+    delete point.isSaving;
+    delete point.isDeleting;
+    delete point.isDisabled;
+
     return point;
   }
 

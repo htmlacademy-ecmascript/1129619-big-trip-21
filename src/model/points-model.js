@@ -1,7 +1,6 @@
 import Observable from '../framework/observable';
 import { UpdateType } from '../const';
 
-
 export default class PointsModel extends Observable {
   #points = [];
   #offers = [];
@@ -14,12 +13,13 @@ export default class PointsModel extends Observable {
   }
 
   #adaptToClient(point) {
-    const adaptedPoint = {...point,
+    const adaptedPoint = {
+      ...point,
       typePoint: point['type'],
       basePrice: point['base_price'],
       timeStart: point['date_from'],
       timeEnd: point['date_to'],
-      isFavorite: point['is_favorite'],
+      isFavorite: Boolean(point['is_favorite']),
       offersCheck: point['offers'],
     };
 
@@ -41,7 +41,7 @@ export default class PointsModel extends Observable {
 
       this.#destinations = await this.#pointsApiService.destinations;
       this.#offers = await this.#pointsApiService.offers;
-    } catch(err) {
+    } catch (err) {
       this.#points = [];
       this.#destinations = [];
       this.#offers = [];
@@ -62,45 +62,56 @@ export default class PointsModel extends Observable {
     return this.#destinations;
   }
 
-  updatePoint(updateType, updatedPoint) {
-    const index = this.#points.findIndex((point) => point.id === updatedPoint.id);
+  async updatePoint(updateType, updated) {
+    const index = this.#points.findIndex((point) => point.id === updated.id);
 
     if (index === -1) {
       throw new Error('Can\'t update unexisting point');
     }
 
-    this.#points = [
-      ...this.#points.slice(0, index),
-      updatedPoint,
-      ...this.#points.slice(index + 1),
-    ];
+    try {
+      const response = await this.#pointsApiService.updatePoint(updated);
+      const updatedPoint = this.#adaptToClient(response);
 
-    this._notify(updateType, updatedPoint);
+      this.#points = [
+        ...this.#points.slice(0, index),
+        updatedPoint,
+        ...this.#points.slice(index + 1),
+      ];
+
+      this._notify(updateType, updatedPoint);
+    } catch (err) {
+      throw new Error('Can\'t update point');
+    }
   }
 
-  addPoint(updateType, updatedPoint) {
-    this.#points = [
-      updatedPoint,
-      ...this.#points,
-    ];
-
-    this._notify(updateType, updatedPoint);
+  async addPoint(updateType, updated) {
+    try {
+      const response = await this.#pointsApiService.addPoint(updated);
+      const newPoint = this.#adaptToClient(response);
+      this.#points = [newPoint, ...this.#points];
+      this._notify(updateType, newPoint);
+    } catch (err) {
+      throw new Error('Can\'t add task');
+    }
   }
 
-
-  deletePoint(updateType, updatedPoint) {
-    const index = this.#points.findIndex((task) => task.id === updatedPoint.id);
+  async deletePoint(updateType, updated) {
+    const index = this.#points.findIndex((task) => task.id === updated.id);
 
     if (index === -1) {
-      throw new Error('Can\'t delete unexisting task');
+      throw new Error('Can\'t delete unexisting point');
     }
 
-    this.#points = [
-      ...this.#points.slice(0, index),
-      ...this.#points.slice(index + 1),
-    ];
-
-    this._notify(updateType);
+    try {
+      await this.#pointsApiService.deletePoint(updated);
+      this.#points = [
+        ...this.#points.slice(0, index),
+        ...this.#points.slice(index + 1),
+      ];
+      this._notify(updateType);
+    } catch (err) {
+      throw new Error('Can\'t delete point');
+    }
   }
-
 }

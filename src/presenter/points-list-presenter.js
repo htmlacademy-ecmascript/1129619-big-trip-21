@@ -2,12 +2,18 @@ import { remove, render, RenderPosition } from '../framework/render';
 import { filter } from '../utils/filter';
 import { SortType, UpdateType, UserAction, FilterType } from '../const';
 import { sortPointsByDay, sortPointsByPrice, sortPointsByTime } from '../utils/sort';
+import UiBlocker from '../framework/ui-blocker/ui-blocker';
 import ContainerForPointsView from '../view/container-points-view';
 import NoPointView from '../view/no-point-view';
 import PointSort from '../view/sort-view';
 import PointPresenter from './point-presenter';
 import NewPointPresenter from './new-point-presenter';
 import LoadingView from '../view/loading-view';
+
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
 
 export default class BoardPresenter {
   // создали список ul в который элементами списка будем добавлять li (контент);
@@ -25,6 +31,10 @@ export default class BoardPresenter {
   #filterType = FilterType.EVERYTHING;
   #newPointPresenter = null;
   #isLoading = true;
+  #uiBlocker = new UiBlocker({
+    lowerLimit: TimeLimit.LOWER_LIMIT,
+    upperLimit: TimeLimit.UPPER_LIMIT
+  });
 
   constructor({ pointContainer, pointsModel, filterModel, onNewTaskDestroy }) {
     this.#pointContainer = pointContainer;
@@ -48,13 +58,10 @@ export default class BoardPresenter {
 
     switch (this.#currentSortType) {
       case SortType.DAY:
-        // console.log([...this.#pointsModel.points].sort(sortPointsByDay));
         return filteredPoints.sort(sortPointsByDay);
       case SortType.TIME:
-        // console.log([...this.#pointsModel.points].sort(sortPointsByTime));
         return filteredPoints.sort(sortPointsByTime);
       case SortType.PRICE:
-        // console.log([...this.#pointsModel.points].sort(sortPointsByPrice));
         return filteredPoints.sort(sortPointsByPrice);
     }
 
@@ -76,10 +83,13 @@ export default class BoardPresenter {
     this.#currentSortType = SortType.DAY;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#newPointPresenter.init(this.destinations, this.offers);
+
+    if(this.#noPointComponent !== null) {
+      remove(this.#noPointComponent);
+    }
   }
 
   #renderPointsList() {
-    // если нет точек, то вставляем заглушку
     if (this.#isLoading) {
       this.#renderLoading();
       return;
@@ -87,14 +97,13 @@ export default class BoardPresenter {
 
     if (!this.#pointsModel.points.length) {
       this.#renderNoPoints();
+      return;
     }
 
-    // первым аргументом добавляем список ul, вторым место куда это будет отрисовываться
     this.#renderPointSort();
     render(this.#containerForPoints, this.#pointContainer);
     for (let i = 0; i < this.pointsFiltered.length; i++) {
       this.#renderPoint(this.pointsFiltered[i]);
-      // }
     }
   }
 
@@ -129,28 +138,38 @@ export default class BoardPresenter {
     this.#pointPresenters.forEach((presenter) => presenter.resetView());
   };
 
-  #handleViewAction = (actionType, updateType, updatePoint) => {
-    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
-    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
-    // updatePoint - обновленные данные
+  #handleViewAction = async (actionType, updateType, updatePoint) => {
+    this.#uiBlocker.block();
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        this.#pointsModel.updatePoint(updateType, updatePoint);
+        this.#pointPresenters.get(updatePoint.id).setSaving();
+        try {
+          await this.#pointsModel.updatePoint(updateType, updatePoint);
+        } catch(err) {
+          this.#pointPresenters.get(updatePoint.id).setAborting();
+        }
         break;
       case UserAction.ADD_POINT:
-        this.#pointsModel.addPoint(updateType, updatePoint);
+        this.#newPointPresenter.setSaving();
+        try {
+          await this.#pointsModel.addPoint(updateType, updatePoint);
+        } catch(err) {
+          this.#newPointPresenter.setAborting();
+        }
         break;
       case UserAction.DELETE_POINT:
-        this.#pointsModel.deletePoint(updateType, updatePoint);
+        this.#pointPresenters.get(updatePoint.id).setDeleting();
+        try {
+          await this.#pointsModel.deletePoint(updateType, updatePoint);
+        } catch(err) {
+          this.#pointPresenters.get(updatePoint.id).setAborting();
+        }
         break;
     }
+    this.#uiBlocker.unblock();
   };
 
   #handleModelEvent = (updateType, data) => {
-    // В зависимости от типа изменений решаем, что делать:
-    // - обновить часть списка (например, когда поменялось описание)
-    // - обновить список (например, когда задача ушла в архив)
-    // - обновить всю доску (например, при переключении фильтра)
     switch (updateType) {
       case UpdateType.PATCH:
         this.#pointPresenters.get(data.id).init(data, this.destinations, this.offers);
@@ -176,7 +195,6 @@ export default class BoardPresenter {
       return;
     }
     this.#currentSortType = sortType;
-    // нужно перерисовать
     this.#clearPointList();
     this.#renderPointsList();
   };
