@@ -19,7 +19,7 @@ export default class PointsModel extends Observable {
       basePrice: point['base_price'],
       timeStart: point['date_from'],
       timeEnd: point['date_to'],
-      isFavorite: point['is_favorite'],
+      isFavorite: Boolean(point['is_favorite']),
       offersCheck: point['offers'],
     };
 
@@ -85,9 +85,9 @@ export default class PointsModel extends Observable {
     }
   }
 
-  async addPoint(updateType, updatedPoint) {
+  async addPoint(updateType, updated) {
     try {
-      const response = await this.#pointsApiService.addPoint(updatedPoint);
+      const response = await this.#pointsApiService.addPoint(updated);
       const newPoint = this.#adaptToClient(response);
       this.#points = [newPoint, ...this.#points];
       this._notify(updateType, newPoint);
@@ -96,15 +96,15 @@ export default class PointsModel extends Observable {
     }
   }
 
-  async deletePoint(updateType, updatedPoint) {
-    const index = this.#points.findIndex((task) => task.id === updatedPoint.id);
+  async deletePoint(updateType, updated) {
+    const index = this.#points.findIndex((task) => task.id === updated.id);
 
     if (index === -1) {
       throw new Error('Can\'t delete unexisting point');
     }
 
     try {
-      await this.#pointsApiService.deletePoint(updatedPoint);
+      await this.#pointsApiService.deletePoint(updated);
       this.#points = [
         ...this.#points.slice(0, index),
         ...this.#points.slice(index + 1),

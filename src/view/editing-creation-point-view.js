@@ -12,6 +12,7 @@ const BLANK_DATA_TRIP = {
   timeStart: new Date(),
   timeEnd: null,
   offersCheck: [],
+  isFavorite: false,
 };
 
 function editingCreationPoint(point, listOffers, listDestination, isNewPoint) {
@@ -76,7 +77,6 @@ function editingCreationPoint(point, listOffers, listDestination, isNewPoint) {
   }
   const offersBlockTemplate = createOffersBlockTemplate();
 
-  /// типы событий
   function createEventTypeListItemsTemplate() {
     return listOffers.map((offer) =>
       `<div class="event__type-item">
@@ -86,7 +86,6 @@ function editingCreationPoint(point, listOffers, listDestination, isNewPoint) {
     ).join('');
   }
 
-  // список городов для выбора
   function createDestinationListItemsTemplate() {
     return listDestination.map((item) =>
       `<option value="${item.name}"></option>`

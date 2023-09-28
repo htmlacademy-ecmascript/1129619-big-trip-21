@@ -58,13 +58,10 @@ export default class BoardPresenter {
 
     switch (this.#currentSortType) {
       case SortType.DAY:
-        // console.log([...this.#pointsModel.points].sort(sortPointsByDay));
         return filteredPoints.sort(sortPointsByDay);
       case SortType.TIME:
-        // console.log([...this.#pointsModel.points].sort(sortPointsByTime));
         return filteredPoints.sort(sortPointsByTime);
       case SortType.PRICE:
-        // console.log([...this.#pointsModel.points].sort(sortPointsByPrice));
         return filteredPoints.sort(sortPointsByPrice);
     }
 
@@ -93,7 +90,6 @@ export default class BoardPresenter {
   }
 
   #renderPointsList() {
-    // если нет точек, то вставляем заглушку
     if (this.#isLoading) {
       this.#renderLoading();
       return;
@@ -101,14 +97,13 @@ export default class BoardPresenter {
 
     if (!this.#pointsModel.points.length) {
       this.#renderNoPoints();
+      return;
     }
 
-    // первым аргументом добавляем список ul, вторым место куда это будет отрисовываться
     this.#renderPointSort();
     render(this.#containerForPoints, this.#pointContainer);
     for (let i = 0; i < this.pointsFiltered.length; i++) {
       this.#renderPoint(this.pointsFiltered[i]);
-      // }
     }
   }
 
@@ -175,10 +170,6 @@ export default class BoardPresenter {
   };
 
   #handleModelEvent = (updateType, data) => {
-    // В зависимости от типа изменений решаем, что делать:
-    // - обновить часть списка (например, когда поменялось описание)
-    // - обновить список (например, когда задача ушла в архив)
-    // - обновить всю доску (например, при переключении фильтра)
     switch (updateType) {
       case UpdateType.PATCH:
         this.#pointPresenters.get(data.id).init(data, this.destinations, this.offers);
@@ -204,7 +195,6 @@ export default class BoardPresenter {
       return;
     }
     this.#currentSortType = sortType;
-    // нужно перерисовать
     this.#clearPointList();
     this.#renderPointsList();
   };
