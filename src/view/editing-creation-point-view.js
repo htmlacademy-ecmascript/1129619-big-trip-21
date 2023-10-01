@@ -9,8 +9,8 @@ const BLANK_DATA_TRIP = {
   typePoint: 'flight',
   basePrice: 0,
   destination: '',
-  timeStart: new Date(),
-  timeEnd: null,
+  timeStart: '',
+  timeEnd: '',
   offersCheck: [],
   isFavorite: false,
 };
