@@ -14,12 +14,12 @@ export default class PointsApiService extends ApiService {
   }
 
   get destinations() {
-    return this._load({url: 'destinations'})
+    return this._load({ url: 'destinations' })
       .then(ApiService.parseResponse);
   }
 
   get offers() {
-    return this._load({url: 'offers'})
+    return this._load({ url: 'offers' })
       .then(ApiService.parseResponse);
   }
 
@@ -41,7 +41,7 @@ export default class PointsApiService extends ApiService {
       url: 'points',
       method: Method.POST,
       body: JSON.stringify(this.#adaptToServer(point)),
-      headers: new Headers({'Content-Type': 'application/json'}),
+      headers: new Headers({ 'Content-Type': 'application/json' }),
     });
 
     const parsedResponse = await ApiService.parseResponse(response);
@@ -66,7 +66,7 @@ export default class PointsApiService extends ApiService {
       'date_from': point.timeStart,
       'date_to': point.timeEnd,
       'is_favorite': point.isFavorite,
-      'offers': point.offersCheck,
+      'offers': point.checkedOffers,
     };
 
     delete adaptedPoint.typePoint;
@@ -74,7 +74,7 @@ export default class PointsApiService extends ApiService {
     delete adaptedPoint.timeStart;
     delete adaptedPoint.timeEnd;
     delete adaptedPoint.isFavorite;
-    delete adaptedPoint.offersCheck;
+    delete adaptedPoint.checkedOffers;
 
     return adaptedPoint;
 

@@ -3,7 +3,7 @@ import { filter } from '../utils/filter';
 import { SortType, UpdateType, UserAction, FilterType } from '../const';
 import { sortPointsByDay, sortPointsByPrice, sortPointsByTime } from '../utils/sort';
 import UiBlocker from '../framework/ui-blocker/ui-blocker';
-import ContainerForPointsView from '../view/container-points-view';
+import ContainerPointsView from '../view/container-points-view';
 import NoPointView from '../view/no-point-view';
 import PointSort from '../view/sort-view';
 import PointPresenter from './point-presenter';
@@ -15,9 +15,9 @@ const TimeLimit = {
   UPPER_LIMIT: 1000,
 };
 
-export default class BoardPresenter {
+export default class PointsListPresenter {
   // создали список ul в который элементами списка будем добавлять li (контент);
-  #containerForPoints = new ContainerForPointsView();
+  #containerForPoints = new ContainerPointsView();
   #noPointComponent = null;
   #pointSort = null;
   #filterModel = null;
@@ -84,7 +84,7 @@ export default class BoardPresenter {
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#newPointPresenter.init(this.destinations, this.offers);
 
-    if(this.#noPointComponent !== null) {
+    if (this.#noPointComponent !== null) {
       remove(this.#noPointComponent);
     }
   }
@@ -145,7 +145,7 @@ export default class BoardPresenter {
         this.#pointPresenters.get(updatePoint.id).setSaving();
         try {
           await this.#pointsModel.updatePoint(updateType, updatePoint);
-        } catch(err) {
+        } catch (err) {
           this.#pointPresenters.get(updatePoint.id).setAborting();
         }
         break;
@@ -153,7 +153,7 @@ export default class BoardPresenter {
         this.#newPointPresenter.setSaving();
         try {
           await this.#pointsModel.addPoint(updateType, updatePoint);
-        } catch(err) {
+        } catch (err) {
           this.#newPointPresenter.setAborting();
         }
         break;
@@ -161,7 +161,7 @@ export default class BoardPresenter {
         this.#pointPresenters.get(updatePoint.id).setDeleting();
         try {
           await this.#pointsModel.deletePoint(updateType, updatePoint);
-        } catch(err) {
+        } catch (err) {
           this.#pointPresenters.get(updatePoint.id).setAborting();
         }
         break;

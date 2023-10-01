@@ -1,7 +1,7 @@
 import AbstractView from '../framework/view/abstract-view';
 
 function createFilterItemTemplate(filter, currentFilterType) {
-  const {type, hasPoints} = filter;
+  const { type, hasPoints } = filter;
 
   return (
     `<div class="trip-filters__filter">
@@ -30,7 +30,7 @@ function createTripFiltersTemplate(filterItems, currentFilterType) {
   );
 }
 
-export default class TripFiltersView extends AbstractView {
+export default class FilterView extends AbstractView {
   #filters = null;
   #currentFilter = null;
   #handleFilterTypeChange = null;
