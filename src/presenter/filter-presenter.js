@@ -1,5 +1,5 @@
 import { render, replace, remove, RenderPosition } from '../framework/render';
-import TripFiltersView from '../view/filter-view';
+import FilterView from '../view/filter-view';
 import { filter } from '../utils/filter';
 import { FilterType, UpdateType } from '../const';
 
@@ -32,13 +32,13 @@ export default class filterPresenter {
 
     const prevFilterComponent = this.#filterComponent;
 
-    this.#filterComponent = new TripFiltersView({
+    this.#filterComponent = new FilterView({
       filters,
       currentFilterType: this.#filterModel.filter,
       onFilterTypeChange: this.#handleFilterTypeChange,
     });
 
-    if(prevFilterComponent === null) {
+    if (prevFilterComponent === null) {
       render(this.#filterComponent, this.#filterContainer, RenderPosition.BEFOREEND);
       return;
     }

@@ -1,10 +1,10 @@
 import { render, RenderPosition } from './framework/render';
 import TripInfo from './view/trip-info-view';
-import BoardPresenter from './presenter/points-list-presenter';
+import PointsListPresenter from './presenter/points-list-presenter';
 import PointsModel from './model/points-model';
 import FilterModel from './model/filter-model';
 import FilterPresenter from './presenter/filter-presenter';
-import NewPointButtonView from './view/new-point-button';
+import NewPointButton from './view/new-point-button';
 import PointsApiService from './points-api-service';
 
 const AUTHORIZATION = 'Basic vo1070vsk11A4470711';
@@ -21,14 +21,14 @@ const pointsModel = new PointsModel({
 });
 
 const filterModel = new FilterModel();
-const pointListPresenter = new BoardPresenter({
+const pointListPresenter = new PointsListPresenter({
   pointContainer: tripEventsElement,
   pointsModel,
   filterModel,
   onNewTaskDestroy: handleNewTaskFormClose,
 });
 
-const newPointButtonView = new NewPointButtonView({
+const newPointButtonView = new NewPointButton({
   onClick: handleNewPointButtonClick
 });
 

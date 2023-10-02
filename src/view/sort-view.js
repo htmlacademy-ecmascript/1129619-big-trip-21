@@ -20,22 +20,22 @@ function createPointSortItemTemplate(sortItem) {
 `;
 }
 
-function createPointSort({ sortMap }) {
+function createPointSort({ sortMapItems }) {
   return (
     `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
-        ${sortMap.map((sortItem) => createPointSortItemTemplate(sortItem)).join('')}
+        ${sortMapItems.map((sortItem) => createPointSortItemTemplate(sortItem)).join('')}
     </form>`
   );
 }
 
-export default class PointSortView extends AbstractView {
+export default class sortView extends AbstractView {
   #handleSortTypeChange = null;
-  #sortMap = null;
+  #sortMapItems = null;
 
   constructor({ onSortTypeChange, sortType }) {
     super();
     this.#handleSortTypeChange = onSortTypeChange;
-    this.#sortMap = Object.values(SortType)
+    this.#sortMapItems = Object.values(SortType)
       .map((type) => ({
         type,
         isChecked: (type === sortType)
@@ -45,7 +45,7 @@ export default class PointSortView extends AbstractView {
 
   get template() {
     return createPointSort({
-      sortMap: this.#sortMap
+      sortMapItems: this.#sortMapItems
     });
   }
 

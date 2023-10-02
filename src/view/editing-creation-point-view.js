@@ -9,35 +9,35 @@ const BLANK_DATA_TRIP = {
   typePoint: 'flight',
   basePrice: 0,
   destination: '',
-  timeStart: new Date(),
-  timeEnd: null,
-  offersCheck: [],
+  timeStart: '',
+  timeEnd: '',
+  checkedOffers: [],
   isFavorite: false,
 };
 
-function editingCreationPoint(point, listOffers, listDestination, isNewPoint) {
-  const { id, basePrice, destination, offersCheck, timeStart, timeEnd, typePoint, isSaving, isDeleting, isDisabled } = point;
+function editingCreationPoint(point, listOffers, destinations, isNewPoint) {
+  const { id, basePrice, destination, checkedOffers, timeStart, timeEnd, typePoint, isSaving, isDeleting, isDisabled } = point;
 
   const startDate = filterDateForEditorCreator(timeStart);
   const endDate = filterDateForEditorCreator(timeEnd);
 
-  const destinationPointObj = listDestination.find((item) => item.id === destination);
+  const pointDestinations = destinations.find((item) => item.id === destination);
 
-  const typeOffersObj = listOffers.find((item) => item.type === typePoint);
+  const typeOffers = listOffers.find((item) => item.type === typePoint);
 
   function createPhotosPointTemplate() {
-    if (destinationPointObj) {
-      return destinationPointObj.pictures.map((picture) =>
+    if (pointDestinations) {
+      return pointDestinations.pictures.map((picture) =>
         `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`
       ).join('');
     }
   }
 
   function createDestinationsBlockTemplate() {
-    if (destinationPointObj?.description) {
+    if (pointDestinations?.description) {
       return `<section class="event__section  event__section--destination">
               <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-              <p class="event__destination-description">${destinationPointObj.description}</p>
+              <p class="event__destination-description">${pointDestinations.description}</p>
               <div class="event__photos-container">
                 <div class="event__photos-tape">${createPhotosPointTemplate()}</div>
               </div>
@@ -49,8 +49,8 @@ function editingCreationPoint(point, listOffers, listDestination, isNewPoint) {
 
   const destinationsBlockTemplate = createDestinationsBlockTemplate();
 
-  const createListOffersForPointTemplate = () => typeOffersObj.offers.map((offer) => {
-    const isChecked = offersCheck.includes(offer.id) ? 'checked' : '';
+  const createListOffersForPointTemplate = () => typeOffers.offers.map((offer) => {
+    const isChecked = checkedOffers.includes(offer.id) ? 'checked' : '';
     return `<div class="event__offer-selector">
       <input class="event__offer-checkbox  visually-hidden" data-id="${offer.id}" id="event-offer-${offer.id}" type="checkbox" name="event-offer-${offer.id}" ${isChecked}>
       <label class="event__offer-label" for="event-offer-${offer.id}">
@@ -64,7 +64,7 @@ function editingCreationPoint(point, listOffers, listDestination, isNewPoint) {
   const typeOffersTemplate = createListOffersForPointTemplate();
 
   function createOffersBlockTemplate() {
-    if (typeOffersObj.offers.length > 0) {
+    if (typeOffers.offers.length > 0) {
       return `<section class="event__section  event__section--offers">
               <h3 class="event__section-title  event__section-title--offers">Offers</h3>
               <div class="event__available-offers">
@@ -87,7 +87,7 @@ function editingCreationPoint(point, listOffers, listDestination, isNewPoint) {
   }
 
   function createDestinationListItemsTemplate() {
-    return listDestination.map((item) =>
+    return destinations.map((item) =>
       `<option value="${item.name}"></option>`
     ).join('');
   }
@@ -123,7 +123,7 @@ function editingCreationPoint(point, listOffers, listDestination, isNewPoint) {
             <label class="event__label  event__type-output" for="event-destination-1">
               ${typePoint}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${he.encode(destinationPointObj?.name || '')}" list="destination-list-1">
+            <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${he.encode(pointDestinations?.name || '')}" list="destination-list-1">
             <datalist id="destination-list-1">
             ${createDestinationListItemsTemplate()}
             </datalist>
@@ -234,7 +234,7 @@ export default class EditingCreationPointView extends AbstractStatefulView {
     checkedBoxes.map((element) => updatedCheckedCheckboxes.push(element.dataset.id, 10));
     this._setState({
       ...this._state.point,
-      offersCheck: updatedCheckedCheckboxes,
+      checkedOffers: updatedCheckedCheckboxes,
     });
   };
 

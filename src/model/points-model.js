@@ -20,7 +20,7 @@ export default class PointsModel extends Observable {
       timeStart: point['date_from'],
       timeEnd: point['date_to'],
       isFavorite: Boolean(point['is_favorite']),
-      offersCheck: point['offers'],
+      checkedOffers: point['offers'],
     };
 
     delete adaptedPoint['type'];

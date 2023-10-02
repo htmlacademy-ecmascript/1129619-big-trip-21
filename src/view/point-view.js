@@ -6,10 +6,10 @@ import {
   filterPointDay,
 } from '../utils/time';
 
-function createPoint(point, listDestination, listOffers) {
-  const { basePrice, destination, isFavorite, offersCheck, timeStart, timeEnd, typePoint } = point;
+function createPoint(point, destinations, listOffers) {
+  const { basePrice, destination, isFavorite, checkedOffers, timeStart, timeEnd, typePoint } = point;
 
-  const destinationPointObj = listDestination.find((item) => item.id === destination);
+  const pointDestinations = destinations.find((item) => item.id === destination);
 
   const day = filterDayMonth(timeStart);
   const hoursStart = filterHoursPoints(timeStart);
@@ -17,10 +17,10 @@ function createPoint(point, listDestination, listOffers) {
   const timeInterval = getTimeInterval(timeStart, timeEnd);
   const startPointDay = filterPointDay(timeStart);
 
-  const typeOffersObj = listOffers.find((offer) => offer.type === typePoint);
+  const typeOffers = listOffers.find((offer) => offer.type === typePoint);
 
-  const createTypeOffersTemplate = () => typeOffersObj.offers.map((offer) => {
-    const isChecked = offersCheck.includes(offer.id) ? 'checked' : '';
+  const createTypeOffersTemplate = () => typeOffers.offers.map((offer) => {
+    const isChecked = checkedOffers.includes(offer.id) ? 'checked' : '';
     if (isChecked) {
       return `<li class="event__offer">
               <span class="event__offer-title">${offer.title}</span>
@@ -40,7 +40,7 @@ function createPoint(point, listDestination, listOffers) {
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/${typePoint}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${typePoint} ${destinationPointObj?.name || ''}</h3>
+        <h3 class="event__title">${typePoint} ${pointDestinations?.name || ''}</h3>
         <div class="event__schedule">
           <p class="event__time">
             <time class="event__start-time" datetime="${timeStart}">${hoursStart}</time>
@@ -56,7 +56,7 @@ function createPoint(point, listDestination, listOffers) {
         <ul class="event__selected-offers">
 
 
-        ${ createTypeOffersTemplate() }
+        ${createTypeOffersTemplate()}
 
         </ul>
         <button class="event__favorite-btn ${favoriteClassPoint}" type="button">
